@@ -1,0 +1,21 @@
+# PLACEHOLDER — replace with the official template workflow.
+#
+# The Bobathon submission template ships `.github/workflows/validate.yml`
+# ("Validate Submission"). Per the guide: do NOT modify it.
+#
+# When the repo is created from `bob-ai-hackathon-submission-template`,
+# copy the official file over this placeholder unchanged.
+#
+# This placeholder intentionally does nothing so the local repo stays clean
+# until the template is used.
+name: Validate Submission (placeholder)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Replace this file with the official template validate.yml"

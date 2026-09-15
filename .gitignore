@@ -1,0 +1,29 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+
+# --- Node ---
+node_modules/
+dist/
+build/
+coverage/
+*.log
+npm-debug.log*
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# --- Generated data (seed fixtures are committed; large local dumps are not) ---
+data/tmp/
+*.tmp

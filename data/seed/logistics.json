@@ -1,0 +1,1838 @@
+{
+  "asset_assignments": [
+    {
+      "asset_id": "A002",
+      "end_time": "2026-09-16T21:00:00Z",
+      "id": "AA-0001",
+      "reserved": true,
+      "shipment_id": "S014",
+      "start_time": "2026-09-15T21:00:00Z",
+      "status": "planned"
+    },
+    {
+      "asset_id": "A006",
+      "end_time": "2026-09-15T21:00:00Z",
+      "id": "AA-0002",
+      "reserved": false,
+      "shipment_id": "S020",
+      "start_time": "2026-09-14T21:00:00Z",
+      "status": "planned"
+    },
+    {
+      "asset_id": "A006",
+      "end_time": "2026-09-16T09:00:00Z",
+      "id": "AA-0003",
+      "reserved": true,
+      "shipment_id": "S020",
+      "start_time": "2026-09-15T09:00:00Z",
+      "status": "planned"
+    },
+    {
+      "asset_id": "A010",
+      "end_time": "2026-09-15T15:00:00Z",
+      "id": "AA-0004",
+      "reserved": false,
+      "shipment_id": "S041",
+      "start_time": "2026-09-14T03:00:00Z",
+      "status": "active"
+    },
+    {
+      "asset_id": "A011",
+      "end_time": "2026-09-12T09:00:00Z",
+      "id": "AA-0005",
+      "reserved": false,
+      "shipment_id": "S042",
+      "start_time": "2026-09-11T09:00:00Z",
+      "status": "completed"
+    },
+    {
+      "asset_id": "A019",
+      "end_time": "2026-09-16T09:00:00Z",
+      "id": "AA-0006",
+      "reserved": true,
+      "shipment_id": "S044",
+      "start_time": "2026-09-15T09:00:00Z",
+      "status": "planned"
+    },
+    {
+      "asset_id": "A023",
+      "end_time": "2026-09-16T03:00:00Z",
+      "id": "AA-0007",
+      "reserved": true,
+      "shipment_id": "S040",
+      "start_time": "2026-09-15T03:00:00Z",
+      "status": "planned"
+    }
+  ],
+  "carriers": [
+    {
+      "capacity_units": 900,
+      "cost_index": 1.05,
+      "id": "C01",
+      "modes": [
+        "sea"
+      ],
+      "name": "BlueWave Shipping",
+      "reliability_score": 0.94,
+      "service_regions": [
+        "IN-WEST-COAST",
+        "AE-JEBEL-ALI"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 700,
+      "cost_index": 1.12,
+      "id": "C02",
+      "modes": [
+        "sea"
+      ],
+      "name": "Gulf Star Logistics",
+      "reliability_score": 0.88,
+      "service_regions": [
+        "IN-WEST-COAST",
+        "AE-JEBEL-ALI"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 1100,
+      "cost_index": 0.98,
+      "id": "C03",
+      "modes": [
+        "sea"
+      ],
+      "name": "NorthSea Lines",
+      "reliability_score": 0.91,
+      "service_regions": [
+        "AE-JEBEL-ALI",
+        "EU-ROTTERDAM"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 300,
+      "cost_index": 0.92,
+      "id": "C04",
+      "modes": [
+        "sea"
+      ],
+      "name": "HarborLink Freight",
+      "reliability_score": 0.83,
+      "service_regions": [
+        "SG-SINGAPORE",
+        "EU-ROTTERDAM"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 1200,
+      "cost_index": 1.01,
+      "id": "C05",
+      "modes": [
+        "sea"
+      ],
+      "name": "Pacific Crown Carriers",
+      "reliability_score": 0.92,
+      "service_regions": [
+        "CN-EAST-COAST",
+        "US-WEST-COAST"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 800,
+      "cost_index": 1.08,
+      "id": "C06",
+      "modes": [
+        "sea"
+      ],
+      "name": "Merlion Shipping",
+      "reliability_score": 0.89,
+      "service_regions": [
+        "SG-SINGAPORE",
+        "EU-ROTTERDAM"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 600,
+      "cost_index": 0.95,
+      "id": "C07",
+      "modes": [
+        "sea"
+      ],
+      "name": "Malabar Coastal",
+      "reliability_score": 0.86,
+      "service_regions": [
+        "IN-WEST-COAST",
+        "SG-SINGAPORE"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 1000,
+      "cost_index": 1.03,
+      "id": "C08",
+      "modes": [
+        "sea"
+      ],
+      "name": "Atlantic Bridge",
+      "reliability_score": 0.9,
+      "service_regions": [
+        "US-EAST-COAST",
+        "EU-ROTTERDAM"
+      ],
+      "status": "active"
+    },
+    {
+      "capacity_units": 400,
+      "cost_index": 1.2,
+      "id": "C09",
+      "modes": [
+        "sea"
+      ],
+      "name": "Legacy Freight Co",
+      "reliability_score": 0.7,
+      "service_regions": [
+        "IN-WEST-COAST",
+        "AE-JEBEL-ALI"
+      ],
+      "status": "inactive"
+    }
+  ],
+  "disruptions": [
+    {
+      "created_by": "operator-1",
+      "description": "Dock workers strike at Mumbai port; berth operations suspended.",
+      "end_time": "2026-09-17T06:00:00Z",
+      "id": "D01",
+      "region_code": "IN-WEST-COAST",
+      "severity": 4,
+      "start_time": "2026-09-14T06:00:00Z",
+      "status": "active",
+      "type": "port_strike"
+    },
+    {
+      "created_by": "operator-1",
+      "description": "Storm system disrupting Los Angeles port approaches; expected duration unknown.",
+      "end_time": null,
+      "id": "D02",
+      "region_code": "US-WEST-COAST",
+      "severity": 3,
+      "start_time": "2026-09-13T21:00:00Z",
+      "status": "active",
+      "type": "weather"
+    },
+    {
+      "created_by": "operator-1",
+      "description": "Planned customs system maintenance window at Rotterdam.",
+      "end_time": "2026-09-22T09:00:00Z",
+      "id": "D03",
+      "region_code": "EU-ROTTERDAM",
+      "severity": 2,
+      "start_time": "2026-09-20T09:00:00Z",
+      "status": "scheduled",
+      "type": "customs"
+    },
+    {
+      "created_by": "operator-1",
+      "description": "Regional tension causing inspection delays at Jebel Ali.",
+      "end_time": "2026-09-16T00:00:00Z",
+      "id": "D04",
+      "region_code": "AE-JEBEL-ALI",
+      "severity": 2,
+      "start_time": "2026-09-14T00:00:00Z",
+      "status": "active",
+      "type": "geopolitical"
+    },
+    {
+      "created_by": "operator-1",
+      "description": "Typhoon warning lifted; Shanghai operations resumed.",
+      "end_time": "2026-09-09T09:00:00Z",
+      "id": "D05",
+      "region_code": "CN-EAST-COAST",
+      "severity": 3,
+      "start_time": "2026-09-04T09:00:00Z",
+      "status": "resolved",
+      "type": "weather"
+    }
+  ],
+  "fleet_assets": [
+    {
+      "available_since": "2026-09-14T02:48:00Z",
+      "capacity_units": 16,
+      "current_lat": 1.3,
+      "current_lon": 103.85,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A001",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-13T18:00:00Z",
+      "capacity_units": 30,
+      "current_lat": 1.35,
+      "current_lon": 103.9,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A002",
+      "refrigerated": true,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-14T00:40:00Z",
+      "capacity_units": 18,
+      "current_lat": 1.28,
+      "current_lon": 103.8,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A003",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-12T23:40:00Z",
+      "capacity_units": 400,
+      "current_lat": 3.45,
+      "current_lon": 103.85,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A004",
+      "refrigerated": true,
+      "status": "available",
+      "type": "vessel"
+    },
+    {
+      "available_since": "2026-09-13T23:00:00Z",
+      "capacity_units": 20,
+      "current_lat": 1.3,
+      "current_lon": 105.15,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A005",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-14T02:00:00Z",
+      "capacity_units": 14,
+      "current_lat": 1.32,
+      "current_lon": 103.86,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A006",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": null,
+      "capacity_units": 12,
+      "current_lat": 1.31,
+      "current_lon": 103.87,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A007",
+      "refrigerated": true,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": null,
+      "capacity_units": 10,
+      "current_lat": 19.076,
+      "current_lon": 72.8777,
+      "current_region_code": "IN-WEST-COAST",
+      "id": "A008",
+      "refrigerated": false,
+      "status": "maintenance",
+      "type": "truck"
+    },
+    {
+      "available_since": null,
+      "capacity_units": 40,
+      "current_lat": 25.0128,
+      "current_lon": 55.0614,
+      "current_region_code": "AE-JEBEL-ALI",
+      "id": "A009",
+      "refrigerated": true,
+      "status": "retired",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-14T05:00:00Z",
+      "capacity_units": 18,
+      "current_lat": 51.9244,
+      "current_lon": 4.4777,
+      "current_region_code": "EU-ROTTERDAM",
+      "id": "A010",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-14T04:00:00Z",
+      "capacity_units": 12,
+      "current_lat": 51.95,
+      "current_lon": 4.5,
+      "current_region_code": "EU-ROTTERDAM",
+      "id": "A011",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-13T16:20:00Z",
+      "capacity_units": 60,
+      "current_lat": 19.1,
+      "current_lon": 72.9,
+      "current_region_code": "IN-WEST-COAST",
+      "id": "A012",
+      "refrigerated": true,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-13T21:20:00Z",
+      "capacity_units": 14,
+      "current_lat": 25.05,
+      "current_lon": 55.1,
+      "current_region_code": "AE-JEBEL-ALI",
+      "id": "A013",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-13T08:00:00Z",
+      "capacity_units": 500,
+      "current_lat": 31.2304,
+      "current_lon": 121.4737,
+      "current_region_code": "CN-EAST-COAST",
+      "id": "A014",
+      "refrigerated": true,
+      "status": "available",
+      "type": "vessel"
+    },
+    {
+      "available_since": "2026-09-13T19:40:00Z",
+      "capacity_units": 16,
+      "current_lat": 33.7395,
+      "current_lon": -118.261,
+      "current_region_code": "US-WEST-COAST",
+      "id": "A015",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-13T14:40:00Z",
+      "capacity_units": 24,
+      "current_lat": 40.7128,
+      "current_lon": -74.006,
+      "current_region_code": "US-EAST-COAST",
+      "id": "A016",
+      "refrigerated": false,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-14T05:40:00Z",
+      "capacity_units": 10,
+      "current_lat": 1.34,
+      "current_lon": 103.88,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A017",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-14T06:00:00Z",
+      "capacity_units": 8,
+      "current_lat": 1.36,
+      "current_lon": 103.89,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A018",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-13T17:10:00Z",
+      "capacity_units": 32,
+      "current_lat": 51.9,
+      "current_lon": 4.45,
+      "current_region_code": "EU-ROTTERDAM",
+      "id": "A019",
+      "refrigerated": true,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-13T22:10:00Z",
+      "capacity_units": 12,
+      "current_lat": 19.08,
+      "current_lon": 72.88,
+      "current_region_code": "IN-WEST-COAST",
+      "id": "A020",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-14T00:00:00Z",
+      "capacity_units": 15,
+      "current_lat": 25.02,
+      "current_lon": 55.07,
+      "current_region_code": "AE-JEBEL-ALI",
+      "id": "A021",
+      "refrigerated": true,
+      "status": "available",
+      "type": "truck"
+    },
+    {
+      "available_since": "2026-09-14T01:50:00Z",
+      "capacity_units": 28,
+      "current_lat": 31.24,
+      "current_lon": 121.48,
+      "current_region_code": "CN-EAST-COAST",
+      "id": "A022",
+      "refrigerated": true,
+      "status": "available",
+      "type": "container"
+    },
+    {
+      "available_since": "2026-09-12T13:40:00Z",
+      "capacity_units": 600,
+      "current_lat": 1.25,
+      "current_lon": 103.82,
+      "current_region_code": "SG-SINGAPORE",
+      "id": "A023",
+      "refrigerated": true,
+      "status": "available",
+      "type": "vessel"
+    },
+    {
+      "available_since": "2026-09-14T03:40:00Z",
+      "capacity_units": 11,
+      "current_lat": 40.73,
+      "current_lon": -74.01,
+      "current_region_code": "US-EAST-COAST",
+      "id": "A024",
+      "refrigerated": false,
+      "status": "available",
+      "type": "truck"
+    }
+  ],
+  "meta": {
+    "deterministic": true,
+    "generator_version": "1.0.0",
+    "now": "2026-09-14T09:00:00Z",
+    "seed": 20260914
+  },
+  "route_segments": [
+    {
+      "capacity_units": 220,
+      "cost_usd": 14000,
+      "dest_lat": 25.0128,
+      "dest_lon": 55.0614,
+      "destination_node": "AEJEA",
+      "distance_km": 1800.0,
+      "id": "SEG-001",
+      "mode": "sea",
+      "name": "SEA-1 Mumbai–Jebel Ali",
+      "origin_node": "INMUM",
+      "planned_duration_hours": 96.0,
+      "region_code": "IN-WEST-COAST",
+      "route_id": "R001",
+      "seq": 1
+    },
+    {
+      "capacity_units": 220,
+      "cost_usd": 9000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-002",
+      "mode": "sea",
+      "name": "SEA-2 Jebel Ali–Rotterdam",
+      "origin_node": "AEJEA",
+      "planned_duration_hours": 48.0,
+      "region_code": "AE-JEBEL-ALI",
+      "route_id": "R001",
+      "seq": 2
+    },
+    {
+      "capacity_units": 180,
+      "cost_usd": 15000,
+      "dest_lat": 25.0128,
+      "dest_lon": 55.0614,
+      "destination_node": "AEJEA",
+      "distance_km": 1800.0,
+      "id": "SEG-003",
+      "mode": "sea",
+      "name": "SEA-3 Mumbai–Jebel Ali (slow)",
+      "origin_node": "INMUM",
+      "planned_duration_hours": 72.0,
+      "region_code": "IN-WEST-COAST",
+      "route_id": "R002",
+      "seq": 1
+    },
+    {
+      "capacity_units": 180,
+      "cost_usd": 8000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-004",
+      "mode": "sea",
+      "name": "SEA-4 Jebel Ali–Rotterdam (slow)",
+      "origin_node": "AEJEA",
+      "planned_duration_hours": 36.0,
+      "region_code": "AE-JEBEL-ALI",
+      "route_id": "R002",
+      "seq": 2
+    },
+    {
+      "capacity_units": 260,
+      "cost_usd": 22000,
+      "dest_lat": 30.017,
+      "dest_lon": 32.58,
+      "destination_node": "EGSUZ",
+      "distance_km": 1800.0,
+      "id": "SEG-005",
+      "mode": "sea",
+      "name": "SEA-5 Jebel Ali–Suez",
+      "origin_node": "AEJEA",
+      "planned_duration_hours": 120.0,
+      "region_code": "AE-JEBEL-ALI",
+      "route_id": "R003",
+      "seq": 1
+    },
+    {
+      "capacity_units": 260,
+      "cost_usd": 18000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-006",
+      "mode": "sea",
+      "name": "SEA-6 Suez–Rotterdam",
+      "origin_node": "EGSUZ",
+      "planned_duration_hours": 96.0,
+      "region_code": "EU-ROTTERDAM",
+      "route_id": "R003",
+      "seq": 2
+    },
+    {
+      "capacity_units": 240,
+      "cost_usd": 16000,
+      "dest_lat": 31.2304,
+      "dest_lon": 121.4737,
+      "destination_node": "PACMID",
+      "distance_km": 1800.0,
+      "id": "SEG-007",
+      "mode": "sea",
+      "name": "SEA-7 Shanghai–Pacific",
+      "origin_node": "CNSHA",
+      "planned_duration_hours": 72.0,
+      "region_code": "CN-EAST-COAST",
+      "route_id": "R004",
+      "seq": 1
+    },
+    {
+      "capacity_units": 240,
+      "cost_usd": 20000,
+      "dest_lat": 33.7395,
+      "dest_lon": -118.261,
+      "destination_node": "USLAX",
+      "distance_km": 1800.0,
+      "id": "SEG-008",
+      "mode": "sea",
+      "name": "SEA-8 Pacific–Los Angeles",
+      "origin_node": "PACMID",
+      "planned_duration_hours": 120.0,
+      "region_code": "US-WEST-COAST",
+      "route_id": "R004",
+      "seq": 2
+    },
+    {
+      "capacity_units": 200,
+      "cost_usd": 12000,
+      "dest_lat": 1.2905,
+      "dest_lon": 103.852,
+      "destination_node": "MYPKG",
+      "distance_km": 1800.0,
+      "id": "SEG-009",
+      "mode": "sea",
+      "name": "SEA-9 Singapore–Malacca",
+      "origin_node": "SGSIN",
+      "planned_duration_hours": 48.0,
+      "region_code": "SG-SINGAPORE",
+      "route_id": "R005",
+      "seq": 1
+    },
+    {
+      "capacity_units": 200,
+      "cost_usd": 30000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-010",
+      "mode": "sea",
+      "name": "SEA-10 Malacca–Rotterdam",
+      "origin_node": "MYPKG",
+      "planned_duration_hours": 240.0,
+      "region_code": "EU-ROTTERDAM",
+      "route_id": "R005",
+      "seq": 2
+    },
+    {
+      "capacity_units": 8,
+      "cost_usd": 11000,
+      "dest_lat": 1.2905,
+      "dest_lon": 103.852,
+      "destination_node": "MYPKG",
+      "distance_km": 1800.0,
+      "id": "SEG-011",
+      "mode": "sea",
+      "name": "SEA-11 Singapore–Malacca (light)",
+      "origin_node": "SGSIN",
+      "planned_duration_hours": 60.0,
+      "region_code": "SG-SINGAPORE",
+      "route_id": "R006",
+      "seq": 1
+    },
+    {
+      "capacity_units": 8,
+      "cost_usd": 28000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-012",
+      "mode": "sea",
+      "name": "SEA-12 Malacca–Rotterdam (light)",
+      "origin_node": "MYPKG",
+      "planned_duration_hours": 240.0,
+      "region_code": "EU-ROTTERDAM",
+      "route_id": "R006",
+      "seq": 2
+    },
+    {
+      "capacity_units": 160,
+      "cost_usd": 10000,
+      "dest_lat": 1.2905,
+      "dest_lon": 103.852,
+      "destination_node": "MYPKG",
+      "distance_km": 1800.0,
+      "id": "SEG-013",
+      "mode": "sea",
+      "name": "SEA-13 Nhava Sheva–Malacca",
+      "origin_node": "INNSA",
+      "planned_duration_hours": 60.0,
+      "region_code": "IN-WEST-COAST",
+      "route_id": "R007",
+      "seq": 1
+    },
+    {
+      "capacity_units": 160,
+      "cost_usd": 9000,
+      "dest_lat": 1.2905,
+      "dest_lon": 103.852,
+      "destination_node": "SGSIN",
+      "distance_km": 1800.0,
+      "id": "SEG-014",
+      "mode": "sea",
+      "name": "SEA-14 Malacca–Singapore",
+      "origin_node": "MYPKG",
+      "planned_duration_hours": 84.0,
+      "region_code": "SG-SINGAPORE",
+      "route_id": "R007",
+      "seq": 2
+    },
+    {
+      "capacity_units": 280,
+      "cost_usd": 24000,
+      "dest_lat": 40.7128,
+      "dest_lon": -74.006,
+      "destination_node": "ATLMID",
+      "distance_km": 1800.0,
+      "id": "SEG-015",
+      "mode": "sea",
+      "name": "SEA-15 New York–Atlantic",
+      "origin_node": "USNYC",
+      "planned_duration_hours": 100.0,
+      "region_code": "US-EAST-COAST",
+      "route_id": "R008",
+      "seq": 1
+    },
+    {
+      "capacity_units": 280,
+      "cost_usd": 26000,
+      "dest_lat": 51.9244,
+      "dest_lon": 4.4777,
+      "destination_node": "NLRTM",
+      "distance_km": 1800.0,
+      "id": "SEG-016",
+      "mode": "sea",
+      "name": "SEA-16 Atlantic–Rotterdam",
+      "origin_node": "ATLMID",
+      "planned_duration_hours": 150.0,
+      "region_code": "EU-ROTTERDAM",
+      "route_id": "R008",
+      "seq": 2
+    }
+  ],
+  "routes": [
+    {
+      "carrier_id": "C01",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "AEJEA",
+      "id": "R001",
+      "origin_node": "INMUM",
+      "planned_cost_usd": 84000,
+      "planned_duration_hours": 144,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C02",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "AEJEA",
+      "id": "R002",
+      "origin_node": "INMUM",
+      "planned_cost_usd": 91000,
+      "planned_duration_hours": 108,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C03",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "NLRTM",
+      "id": "R003",
+      "origin_node": "AEJEA",
+      "planned_cost_usd": 120000,
+      "planned_duration_hours": 216,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C05",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "USLAX",
+      "id": "R004",
+      "origin_node": "CNSHA",
+      "planned_cost_usd": 96000,
+      "planned_duration_hours": 192,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C06",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "NLRTM",
+      "id": "R005",
+      "origin_node": "SGSIN",
+      "planned_cost_usd": 96000,
+      "planned_duration_hours": 288,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C04",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "NLRTM",
+      "id": "R006",
+      "origin_node": "SGSIN",
+      "planned_cost_usd": 88000,
+      "planned_duration_hours": 300,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C07",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "SGSIN",
+      "id": "R007",
+      "origin_node": "INNSA",
+      "planned_cost_usd": 62000,
+      "planned_duration_hours": 144,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C08",
+      "created_at": "2026-08-01T00:00:00Z",
+      "destination_node": "NLRTM",
+      "id": "R008",
+      "origin_node": "USNYC",
+      "planned_cost_usd": 105000,
+      "planned_duration_hours": 250,
+      "status": "active",
+      "total_distance_km": 3600
+    },
+    {
+      "carrier_id": "C08",
+      "created_at": "2026-08-01T00:00:00Z",
+      "defect": true,
+      "destination_node": "NLRTM",
+      "id": "R071",
+      "origin_node": "USNYC",
+      "planned_cost_usd": 99000,
+      "planned_duration_hours": 48,
+      "status": "active",
+      "total_distance_km": 3600
+    }
+  ],
+  "shipments": [
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 310000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-001",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S001",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T09:00:00Z",
+      "planned_departure": "2026-09-11T09:00:00Z",
+      "route_id": "R001",
+      "scenario_tags": [
+        "SCN-001",
+        "SCN-004"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 20
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 180000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-002",
+      "deadline": "2026-09-19T09:00:00Z",
+      "id": "S002",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-15T21:00:00Z",
+      "planned_departure": "2026-09-09T21:00:00Z",
+      "route_id": "R001",
+      "scenario_tags": [
+        "SCN-001"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 24
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 95000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-013",
+      "deadline": "2026-09-17T09:00:00Z",
+      "id": "S003",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-19T09:00:00Z",
+      "planned_departure": "2026-09-13T09:00:00Z",
+      "route_id": "R007",
+      "scenario_tags": [
+        "SCN-001"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 30
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 260000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-001",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S004",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T09:00:00Z",
+      "planned_departure": "2026-09-11T09:00:00Z",
+      "route_id": "R001",
+      "scenario_tags": [
+        "SCN-011"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 18
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 150000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S005",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-012"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 12
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 88000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-001",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S006",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T09:00:00Z",
+      "planned_departure": "2026-09-11T09:00:00Z",
+      "route_id": "R001",
+      "scenario_tags": [
+        "SCN-013"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 16
+    },
+    {
+      "actual_arrival": "2026-09-13T03:00:00Z",
+      "actual_departure": "2026-09-07T17:00:00Z",
+      "cargo_type": "electronics",
+      "cargo_value_usd": 210000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-016",
+      "deadline": "2026-09-12T09:00:00Z",
+      "id": "S007",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-18T03:00:00Z",
+      "planned_departure": "2026-09-07T17:00:00Z",
+      "route_id": "R008",
+      "scenario_tags": [
+        "SCN-007"
+      ],
+      "status": "delivered",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 22
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 130000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-014",
+      "deadline": "2026-09-17T09:00:00Z",
+      "id": "S008",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-15T09:00:00Z",
+      "planned_departure": "2026-09-09T09:00:00Z",
+      "route_id": "R007",
+      "scenario_tags": [
+        "SCN-008"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 26
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 76000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-014",
+      "deadline": "2026-09-17T09:00:00Z",
+      "id": "S009",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T18:00:00Z",
+      "planned_departure": "2026-09-11T18:00:00Z",
+      "route_id": "R007",
+      "scenario_tags": [
+        "SCN-010"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 14
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 140000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": null,
+      "deadline": "2026-09-19T09:00:00Z",
+      "id": "S010",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-15T09:00:00Z",
+      "planned_departure": "2026-09-13T09:00:00Z",
+      "route_id": "R071",
+      "scenario_tags": [
+        "SCN-005"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 20
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 240000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-007",
+      "deadline": "2026-09-20T09:00:00Z",
+      "id": "S011",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-19T10:00:00Z",
+      "planned_departure": "2026-09-11T10:00:00Z",
+      "route_id": "R004",
+      "scenario_tags": [
+        "SCN-006"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 28
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 120000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-006",
+      "deadline": "2026-09-21T01:00:00Z",
+      "id": "S012",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T13:00:00Z",
+      "planned_departure": "2026-09-08T13:00:00Z",
+      "route_id": "R003",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 20
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 60000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S013",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-016"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 65000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S014",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-017"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 420000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-15T21:00:00Z",
+      "id": "S015",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-018"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 58000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S016",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-019"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 8
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "insulin",
+      "cargo_value_usd": 380000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-016",
+      "deadline": "2026-09-16T09:00:00Z",
+      "id": "S017",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-18T03:00:00Z",
+      "planned_departure": "2026-09-07T17:00:00Z",
+      "route_id": "R008",
+      "scenario_tags": [
+        "SCN-020"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 62000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S018",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-021"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 8
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 59000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S019",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-021"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 8
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 72000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S020",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-023"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 480000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S021",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-101"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 470000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S022",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-102"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 460000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S023",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-103"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 450000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S024",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-104"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 440000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S025",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-105"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 430000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S026",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-106"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 420000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S027",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-107"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 410000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S028",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-108"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 400000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S029",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-109"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 390000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S030",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-110"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 380000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S031",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-111"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine_lot_x",
+      "cargo_value_usd": 370000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S032",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-112"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "perishable_exotic",
+      "cargo_value_usd": 360000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S033",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-113"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 350000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-14T17:00:00Z",
+      "id": "S034",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-114"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": "2026-09-14T08:00:00Z",
+      "actual_departure": "2026-09-13T21:00:00Z",
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 340000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-14T08:00:00Z",
+      "id": "S035",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-115"
+      ],
+      "status": "delivered",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 330000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S036",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-116"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 320000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S037",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-117"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 310000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S038",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-118"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 10
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "vaccine",
+      "cargo_value_usd": 520000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-001",
+      "deadline": "2026-09-18T09:00:00Z",
+      "id": "S039",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-17T09:00:00Z",
+      "planned_departure": "2026-09-11T09:00:00Z",
+      "route_id": "R001",
+      "scenario_tags": [
+        "SCN-120"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 12
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 55000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-009",
+      "deadline": "2026-09-22T17:00:00Z",
+      "id": "S040",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-25T21:00:00Z",
+      "planned_departure": "2026-09-13T21:00:00Z",
+      "route_id": "R005",
+      "scenario_tags": [
+        "SCN-015"
+      ],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 6
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 175000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-005",
+      "deadline": "2026-09-21T01:00:00Z",
+      "id": "S041",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-22T13:00:00Z",
+      "planned_departure": "2026-09-13T13:00:00Z",
+      "route_id": "R003",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 22
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 98000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-003",
+      "deadline": "2026-09-19T09:00:00Z",
+      "id": "S042",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-17T21:00:00Z",
+      "planned_departure": "2026-09-13T09:00:00Z",
+      "route_id": "R002",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 18
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 64000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-007",
+      "deadline": "2026-09-20T09:00:00Z",
+      "id": "S043",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-20T21:00:00Z",
+      "planned_departure": "2026-09-12T21:00:00Z",
+      "route_id": "R004",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 20
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "electronics",
+      "cargo_value_usd": 205000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-015",
+      "deadline": "2026-09-21T21:00:00Z",
+      "id": "S044",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-23T03:00:00Z",
+      "planned_departure": "2026-09-12T17:00:00Z",
+      "route_id": "R008",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 24
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "machinery",
+      "cargo_value_usd": 72000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-011",
+      "deadline": "2026-09-23T13:00:00Z",
+      "id": "S045",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-26T11:00:00Z",
+      "planned_departure": "2026-09-13T23:00:00Z",
+      "route_id": "R006",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 5
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "apparel",
+      "cargo_value_usd": 52000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-005",
+      "deadline": "2026-09-18T13:00:00Z",
+      "id": "S046",
+      "is_cold_chain": false,
+      "planned_arrival": "2026-09-20T21:00:00Z",
+      "planned_departure": "2026-09-11T21:00:00Z",
+      "route_id": "R003",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 16
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "fresh_produce",
+      "cargo_value_usd": 90000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-013",
+      "deadline": "2026-09-16T21:00:00Z",
+      "id": "S047",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-18T09:00:00Z",
+      "planned_departure": "2026-09-12T09:00:00Z",
+      "route_id": "R007",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 14
+    },
+    {
+      "actual_arrival": null,
+      "actual_departure": null,
+      "cargo_type": "frozen_food",
+      "cargo_value_usd": 110000,
+      "created_at": "2026-09-01T08:00:00Z",
+      "current_segment_id": "SEG-003",
+      "deadline": "2026-09-17T17:00:00Z",
+      "id": "S048",
+      "is_cold_chain": true,
+      "planned_arrival": "2026-09-15T13:00:00Z",
+      "planned_departure": "2026-09-11T01:00:00Z",
+      "route_id": "R002",
+      "scenario_tags": [],
+      "status": "in_transit",
+      "updated_at": "2026-09-14T08:00:00Z",
+      "volume_units": 12
+    }
+  ]
+}

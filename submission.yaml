@@ -1,0 +1,26 @@
+# Bobathon 2026 — submission metadata (Phase 1A skeleton).
+# TODO_REQUIRED: replace every TODO_REQUIRED value before submission.
+# Q4 (team identities) is deferred — DOES NOT BLOCK MVP development.
+
+team:
+  name: "TODO_REQUIRED"
+  track: "AI"
+  lead:
+    name: "TODO_REQUIRED"
+    email: "TODO_REQUIRED"
+  members:
+    - name: "TODO_REQUIRED"
+      email: "TODO_REQUIRED"
+
+submission:
+  title: "ChainSentinel — Supply Chain Disruption Assistant & Fleet Utilisation Optimizer"
+  problem_statement: >
+    TODO_REQUIRED — 2–3 sentences. Source: docs/problem-statement.md.
+  solution_summary: >
+    TODO_REQUIRED — 2–3 sentences. Source: docs/solution-overview.md.
+  key_features:
+    - "Identify shipments affected by an active disruption, with match reasons"
+    - "Recommend ranked reroute and carrier alternatives with transparent factors"
+    - "Identify idle fleet assets and recommend compatible redeployments"
+    - "Monitor cold-chain IoT logs and classify temperature excursion severity before delivery"
+    - "Grounded IBM Bob assistant with visible evidence and human-approved decisions"

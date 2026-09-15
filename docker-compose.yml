@@ -1,0 +1,26 @@
+# ChainSentinel — local development database
+# PostgreSQL 16 via Docker (approved stack, ADR-005).
+# Host port defaults to 5433 because a local PostgreSQL 18 service already uses 5432
+# on the primary dev machine. Override with POSTGRES_HOST_PORT if needed.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: chainsentinel-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bobathon
+      POSTGRES_PASSWORD: bobathon
+      POSTGRES_DB: chain_sentinel
+    ports:
+      - "${POSTGRES_HOST_PORT:-5433}:5432"
+    volumes:
+      - chainsentinel_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bobathon -d chain_sentinel"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  chainsentinel_pgdata:

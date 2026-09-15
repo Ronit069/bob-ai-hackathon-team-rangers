@@ -1,0 +1,23 @@
+{
+  "name": "chainsentinel-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ChainSentinel REST API (Phase 1A scaffold — no features implemented)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "validate": "node scripts/validate.js",
+    "test": "node --test --test-concurrency=1"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "zod": "^3.23.8"
+  }
+}

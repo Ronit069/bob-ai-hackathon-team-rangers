@@ -1,0 +1,3 @@
+TODO: replace with the real demo video URL before submission.
+Accepted platforms: YouTube (unlisted), Loom, Box, Google Drive (view-only link).
+Video requirements: 3–5 minutes, app starting up, a real user journey, actual output (not mocked).

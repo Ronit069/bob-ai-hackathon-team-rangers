@@ -1,0 +1,60 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.app-shell { display: flex; min-height: 100vh; }
+
+.app-nav {
+  width: 224px;
+  flex: 0 0 224px;
+  background: #101a2b;
+  color: #cbd5e1;
+  padding: 16px 12px;
+}
+.app-nav h1 { font-size: 15px; margin: 4px 8px 2px; color: #fff; letter-spacing: 0.2px; }
+.app-nav .nav-sub { margin: 0 8px 14px; font-size: 11px; color: #7c8ba1; }
+.app-nav a {
+  display: block;
+  padding: 7px 10px;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.app-nav a:hover { background: #1b2942; color: #fff; }
+.app-nav a.active { background: var(--primary); color: #fff; }
+.nav-group { margin: 12px 8px 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; }
+
+.app-main { flex: 1; min-width: 0; padding: 20px 24px 40px; }
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.health-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.health-dot span.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--neutral); display: inline-block; }
+.health-dot.up span.dot { background: var(--ok); }
+.health-dot.down span.dot { background: var(--danger); }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.page-header h2 { margin: 0 0 4px; font-size: 20px; }
+.page-header p { margin: 0; color: var(--muted); }
+
+.grid { display: grid; gap: var(--gap); }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.spacer { flex: 1; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.mt { margin-top: var(--gap); }
