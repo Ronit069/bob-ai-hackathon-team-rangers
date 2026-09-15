@@ -47,7 +47,6 @@ export function AppShell({ children }) {
           <span className={`health-dot ${up ? "up" : health.error ? "down" : ""}`}>
             <span className="dot" />
             {up ? "backend ok" : health.error ? "backend down" : "checking…"}
-            {health.data?.bob ? ` · bob ${health.data.bob}` : ""}
           </span>
         </div>
         {children}
