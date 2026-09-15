@@ -161,10 +161,11 @@ export function DecisionButtons({ recommendation, onDecided }) {
 
   if (recommendation.status !== "pending") {
     return (
-      <p className="row">
-        Decision recorded: <StatusBadge value={recommendation.status} />{" "}
+      <div className="row">
+        <span className="small muted">Decision recorded:</span>
+        <StatusBadge value={recommendation.status} />
         {recommendation.decided_by ? <span className="muted small">by {recommendation.decided_by}</span> : null}
-      </p>
+      </div>
     );
   }
 
@@ -319,19 +320,19 @@ export function PolicyEditor({ policy, onUpdated }) {
 }
 
 export function RiskFactorTable({ factors }) {
-  if (!factors) return <p className="muted">No factors returned.</p>;
+  if (!factors) return <p className="muted small">No factors returned.</p>;
   return (
     <div className="grid cols-3">
       <div>
-        <h4>Disruption</h4>
+        <p style={{ margin: "0 0 8px", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-3)" }}>Disruption</p>
         <FactorList factors={factors.disruption} />
       </div>
       <div>
-        <h4>Cold chain</h4>
+        <p style={{ margin: "0 0 8px", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-3)" }}>Cold chain</p>
         <FactorList factors={factors.coldchain} />
       </div>
       <div>
-        <h4>Weights</h4>
+        <p style={{ margin: "0 0 8px", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-3)" }}>Weights</p>
         <FactorList factors={factors.weights} />
       </div>
     </div>
@@ -347,19 +348,27 @@ export function TemperatureChart({ readings, policy, excursions = [] }) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={320}>
+    <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
         <XAxis
           dataKey="t"
           type="number"
           domain={["dataMin", "dataMax"]}
+          tick={{ fontSize: 11, fill: "var(--text-3)", fontFamily: "var(--font-mono)" }}
           tickFormatter={(value) => new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         />
-        <YAxis domain={["auto", "auto"]} unit="°C" />
-        <Tooltip labelFormatter={(value) => new Date(value).toLocaleString()} />
-        {policy ? <ReferenceLine y={policy.max_c} stroke="#b91c1c" strokeDasharray="4 4" label="policy max" /> : null}
-        {policy ? <ReferenceLine y={policy.min_c} stroke="#1d4ed8" strokeDasharray="4 4" label="policy min" /> : null}
+        <YAxis
+          domain={["auto", "auto"]}
+          unit="°C"
+          tick={{ fontSize: 11, fill: "var(--text-3)", fontFamily: "var(--font-mono)" }}
+        />
+        <Tooltip
+          labelFormatter={(value) => new Date(value).toLocaleString()}
+          contentStyle={{ fontFamily: "var(--font-mono)", fontSize: 12, border: "1px solid var(--border)", borderRadius: "var(--radius)", background: "var(--surface)" }}
+        />
+        {policy ? <ReferenceLine y={policy.max_c} stroke="var(--red)" strokeDasharray="4 4" label={{ value: "policy max", fontSize: 10, fill: "var(--red)" }} /> : null}
+        {policy ? <ReferenceLine y={policy.min_c} stroke="var(--blue)" strokeDasharray="4 4" label={{ value: "policy min", fontSize: 10, fill: "var(--blue)" }} /> : null}
         {excursions
           .filter((excursion) => excursion.start_time && excursion.end_time)
           .map((excursion) => (
@@ -367,11 +376,11 @@ export function TemperatureChart({ readings, policy, excursions = [] }) {
               key={excursion.id}
               x1={new Date(excursion.start_time).getTime()}
               x2={new Date(excursion.end_time).getTime()}
-              fill="#b91c1c"
-              fillOpacity={0.08}
+              fill="var(--red)"
+              fillOpacity={0.06}
             />
           ))}
-        <Line type="monotone" dataKey="temperature_c" dot={false} stroke="#1d4ed8" isAnimationActive={false} />
+        <Line type="monotone" dataKey="temperature_c" dot={false} stroke="var(--accent)" strokeWidth={1.5} isAnimationActive={false} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -379,32 +388,35 @@ export function TemperatureChart({ readings, policy, excursions = [] }) {
 
 export function RedeploymentCard({ candidate, onSelect, busy }) {
   return (
-    <div className="card">
+    <div className="card" style={{ marginBottom: 10 }}>
       <header>
         <div>
-          <h3>
-            {candidate.asset.id} · {candidate.asset.type}
-            {candidate.asset.refrigerated ? " · refrigerated" : ""}
+          <h3 style={{ fontSize: 13, fontFamily: "var(--font-mono)", fontWeight: 600, textTransform: "none", letterSpacing: "0.01em", color: "var(--text)" }}>
+            {candidate.asset.id}
+            <span style={{ fontFamily: "var(--font-sans)", color: "var(--text-3)", fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
+              {candidate.asset.type}{candidate.asset.refrigerated ? " · ❄ refrigerated" : ""}
+            </span>
           </h3>
-          <p className="card-sub">
-            capacity {candidate.asset.capacity_units} · {candidate.factors.distance_km} km away · idle{" "}
-            {candidate.factors.idle_minutes} min
+          <p className="card-sub" style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>
+            cap {candidate.asset.capacity_units} · {candidate.factors.distance_km} km · idle {candidate.factors.idle_minutes} min
           </p>
         </div>
         <ScoreBar score={candidate.score} label="redeployment score" />
       </header>
-      {candidate.factors.contention_count > 1 ? (
-        <div className="banner warn">
-          Also a top candidate for {candidate.factors.contention_count - 1} other shipment(s) — allocate manually.
+      <div className="card-body">
+        {candidate.factors.contention_count > 1 ? (
+          <div className="banner warn" style={{ marginBottom: 10 }}>
+            Also a top candidate for {candidate.factors.contention_count - 1} other shipment(s) — allocate manually.
+          </div>
+        ) : null}
+        <FactorList factors={candidate.factors} />
+        <ReasonList reasons={candidate.reasons} />
+        <div className="row mt">
+          <button type="button" className="primary" disabled={busy} onClick={() => onSelect(candidate)}>
+            Create pending recommendation
+          </button>
+          <span className="small muted">Human approval required — nothing is auto-assigned.</span>
         </div>
-      ) : null}
-      <FactorList factors={candidate.factors} />
-      <ReasonList reasons={candidate.reasons} />
-      <div className="row mt">
-        <button type="button" className="primary" disabled={busy} onClick={() => onSelect(candidate)}>
-          Create pending recommendation
-        </button>
-        <span className="small muted">Human approval required — nothing is auto-assigned.</span>
       </div>
     </div>
   );

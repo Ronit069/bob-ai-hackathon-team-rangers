@@ -9,7 +9,7 @@ import { PolicyEditor } from "../components/domain.jsx";
 import { Banner, EmptyState, ErrorState, LoadingSkeleton, Toast } from "../components/states.jsx";
 import { formatDateTime } from "../utils/format.js";
 
-const POLL_MS = 30_000; // A2: alerts poll every 30 s, paused while the tab is hidden
+const POLL_MS = 30_000;
 
 export function ColdChainScreen() {
   const [selectedPolicy, setSelectedPolicy] = useState(null);
@@ -34,12 +34,12 @@ export function ColdChainScreen() {
   return (
     <div>
       <PageHeader
-        title="Cold-chain monitoring"
-        subtitle="Alerts combine backend-detected excursions and sensor failures."
+        title="Cold Chain"
+        subtitle={`Alerts combine backend-detected excursions and sensor failures · refresh ${POLL_MS / 1000} s`}
         actions={<RefreshButton onClick={alerts.refresh} loading={alerts.loading} />}
       />
 
-      <Card title="Active alerts" subtitle={`Auto-refresh every ${POLL_MS / 1000} s (paused when the tab is hidden).`}>
+      <Card title="Active Alerts" subtitle="Excursions and sensor failures">
         {alerts.loading ? <LoadingSkeleton rows={4} /> : null}
         {alerts.error ? <ErrorState error={alerts.error} onRetry={alerts.refresh} /> : null}
         {alerts.data && alerts.data.count === 0 ? (
@@ -48,27 +48,23 @@ export function ColdChainScreen() {
         {alerts.data && alerts.data.count > 0 ? (
           <DataTable
             columns={[
-              { key: "type", header: "Type", render: (row) => <StatusBadge value={row.type} kind="alert" /> },
               { key: "severity", header: "Severity", render: (row) => <StatusBadge value={row.severity} /> },
-              { key: "shipment_id", header: "Shipment", render: (row) => row.shipment_id },
-              { key: "summary", header: "Summary" },
+              { key: "type", header: "Type", render: (row) => <StatusBadge value={row.type} kind="alert" /> },
+              { key: "shipment_id", header: "Shipment", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.shipment_id}</span> },
+              { key: "summary", header: "Summary", render: (row) => <span style={{ fontSize: 12 }}>{row.summary}</span> },
               {
                 key: "review",
-                header: "Human review",
-                render: (row) => (row.human_review_required ? <span className="badge review">required</span> : <span className="muted">optional</span>),
+                header: "Review",
+                render: (row) => (row.human_review_required ? <span className="badge review">required</span> : <span className="muted small">optional</span>),
               },
               {
                 key: "open",
                 header: "",
                 render: (row) =>
                   row.excursion_id ? (
-                    <Link className="link" to={`/excursions/${row.excursion_id}`}>
-                      open excursion
-                    </Link>
+                    <Link className="link" to={`/excursions/${row.excursion_id}`}>review excursion →</Link>
                   ) : (
-                    <Link className="link" to={`/shipments/${row.shipment_id}/temperature`}>
-                      readings
-                    </Link>
+                    <Link className="link" to={`/shipments/${row.shipment_id}/temperature`}>readings →</Link>
                   ),
               },
             ]}
@@ -78,28 +74,24 @@ export function ColdChainScreen() {
         ) : null}
       </Card>
 
-      <Card title="Cold-chain shipments" subtitle="Unfiltered list; unknown-policy shipments are surfaced by the backend risk/alert layer.">
+      <Card title="Cold-Chain Shipments" subtitle="Unknown-policy shipments are surfaced by the backend risk/alert layer">
         {shipments.loading ? <LoadingSkeleton rows={5} /> : null}
         {shipments.error ? <ErrorState error={shipments.error} onRetry={shipments.refresh} /> : null}
         {shipments.data && shipments.data.count === 0 ? <EmptyState title="No cold-chain shipments" /> : null}
         {shipments.data && shipments.data.count > 0 ? (
           <DataTable
             columns={[
-              { key: "id", header: "Shipment", render: (row) => row.id },
-              { key: "cargo_type", header: "Cargo", render: (row) => row.cargo_type.replace(/_/g, " ") },
+              { key: "id", header: "Shipment", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.id}</span> },
+              { key: "cargo_type", header: "Cargo", render: (row) => <span style={{ fontSize: 12 }}>{row.cargo_type.replace(/_/g, " ")}</span> },
               { key: "status", header: "Status", render: (row) => <StatusBadge value={row.status} /> },
-              { key: "deadline", header: "Deadline", render: (row) => formatDateTime(row.deadline) },
+              { key: "deadline", header: "Deadline", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>{formatDateTime(row.deadline)}</span> },
               {
                 key: "links",
                 header: "",
                 render: (row) => (
                   <div className="row">
-                    <Link className="link" to={`/shipments/${row.id}/temperature`}>
-                      history
-                    </Link>
-                    <Link className="link" to={`/shipments/${row.id}/risk`}>
-                      risk
-                    </Link>
+                    <Link className="link" to={`/shipments/${row.id}/temperature`}>history →</Link>
+                    <Link className="link" to={`/shipments/${row.id}/risk`}>risk →</Link>
                   </div>
                 ),
               },
@@ -110,25 +102,25 @@ export function ColdChainScreen() {
         ) : null}
       </Card>
 
-      <Card title="Temperature policies" subtitle="Configurable and versioned (D7). Values are illustrative placeholders, not regulatory limits.">
+      <Card title="Temperature Policies" subtitle="Configurable and versioned. Values are illustrative placeholders, not regulatory limits.">
         {policies.loading ? <LoadingSkeleton rows={3} /> : null}
         {policies.error ? <ErrorState error={policies.error} onRetry={policies.refresh} /> : null}
         {policies.data && policies.data.count === 0 ? <EmptyState title="No policies configured" /> : null}
         {policies.data && policies.data.count > 0 ? (
           <DataTable
             columns={[
-              { key: "id", header: "Policy" },
-              { key: "cargo_type", header: "Cargo" },
-              { key: "range", header: "Range °C", render: (row) => `${row.min_c} … ${row.max_c}` },
-              { key: "tolerance", header: "Tolerance (min)", render: (row) => row.max_excursion_minutes },
-              { key: "critical", header: "Critical duration (min)", render: (row) => row.critical_duration_minutes },
-              { key: "version", header: "Version", render: (row) => `v${row.version}` },
+              { key: "id", header: "Policy", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.id}</span> },
+              { key: "cargo_type", header: "Cargo", render: (row) => <span style={{ fontSize: 12 }}>{row.cargo_type}</span> },
+              { key: "range", header: "Range °C", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.min_c} … {row.max_c}</span> },
+              { key: "tolerance", header: "Tolerance min", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.max_excursion_minutes}</span> },
+              { key: "critical", header: "Critical min", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.critical_duration_minutes}</span> },
+              { key: "version", header: "Ver.", render: (row) => <span className="badge neutral no-dot">v{row.version}</span> },
               {
                 key: "edit",
                 header: "",
                 render: (row) => (
                   <button type="button" className="link" onClick={() => openEditor(row)}>
-                    edit
+                    edit →
                   </button>
                 ),
               },
@@ -141,12 +133,10 @@ export function ColdChainScreen() {
 
       {selectedPolicy ? (
         <Card
-          title={`Edit policy · ${selectedPolicy.cargo_type} (v${selectedPolicy.version})`}
+          title={`Edit Policy · ${selectedPolicy.cargo_type} (v${selectedPolicy.version})`}
           subtitle="Saving creates a new version; the previous version is retained and the change is audited."
           actions={
-            <button type="button" onClick={() => setSelectedPolicy(null)}>
-              Close
-            </button>
+            <button type="button" onClick={() => setSelectedPolicy(null)}>Close</button>
           }
         >
           <PolicyEditor
@@ -162,8 +152,7 @@ export function ColdChainScreen() {
 
       {alerts.data && alerts.data.data.some((row) => row.type === "sensor_failure") ? (
         <Banner tone="warn" title="Some sensors are not reporting">
-          Historical fixtures age out after the anchor time; run the simulator (POST /api/sensor-readings) for live
-          feeds. This is the backend sensor-failure state, not a UI error.
+          Historical fixtures age out after the anchor time. This is the backend sensor-failure state, not a UI error.
         </Banner>
       ) : null}
 

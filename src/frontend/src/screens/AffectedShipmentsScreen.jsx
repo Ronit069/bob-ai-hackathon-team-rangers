@@ -15,43 +15,43 @@ export function AffectedShipmentsScreen() {
   const disruptionRow = disruption.data?.data?.find((row) => row.id === id) ?? null;
 
   const columns = [
-    { key: "id", header: "Shipment", render: (row) => row.shipment.id },
-    { key: "cargo_type", header: "Cargo", render: (row) => row.shipment.cargo_type.replace(/_/g, " ") },
+    { key: "id", header: "Shipment", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.shipment.id}</span> },
+    { key: "cargo_type", header: "Cargo", render: (row) => <span style={{ fontSize: 12 }}>{row.shipment.cargo_type.replace(/_/g, " ")}</span> },
     {
       key: "cold",
       header: "Cold chain",
-      render: (row) => (row.shipment.is_cold_chain ? <StatusBadge value="active" kind="cold-chain" /> : <span className="muted">no</span>),
+      render: (row) => (row.shipment.is_cold_chain ? <span className="badge info no-dot">❄ cold chain</span> : <span className="muted small">—</span>),
     },
     {
       key: "impact_status",
       header: "Impact",
       render: (row) => (
-        <div className="row">
+        <div className="row" style={{ gap: 5 }}>
           <StatusBadge value={row.impact_status} />
-          {row.impact_status === "unknown_review" ? <span className="small muted">review required</span> : null}
-          {row.timing_basis === "unknown" ? <span className="small muted">timing unknown</span> : null}
+          {row.impact_status === "unknown_review" ? <span className="badge review">review</span> : null}
+          {row.timing_basis === "unknown" ? <span className="badge neutral no-dot">timing?</span> : null}
         </div>
       ),
     },
     { key: "impact_score", header: "Impact score", render: (row) => <ScoreBar score={row.impact_score} /> },
-    { key: "deadline", header: "Deadline", render: (row) => formatDateTime(row.shipment.deadline) },
-    { key: "confidence", header: "Confidence", render: (row) => row.confidence },
-    { key: "reason", header: "Match reason", render: (row) => <span className="small">{row.match_reason}</span> },
+    { key: "deadline", header: "Deadline", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>{formatDateTime(row.shipment.deadline)}</span> },
+    { key: "confidence", header: "Confidence", render: (row) => <span className="badge neutral no-dot">{row.confidence}</span> },
+    { key: "reason", header: "Match reason", render: (row) => <span className="chip">{row.match_reason}</span> },
   ];
 
   return (
     <div>
       <PageHeader
-        title={`Affected shipments · ${id}`}
+        title={`Affected Shipments · ${id}`}
         subtitle={
           disruptionRow
             ? `${disruptionRow.type.replace(/_/g, " ")} in ${disruptionRow.region_code} · severity ${disruptionRow.severity}`
-            : "Ranked blast radius with match reasons (R1)."
+            : "Ranked blast radius with match reasons"
         }
         actions={<RefreshButton onClick={affected.refresh} loading={affected.loading} />}
       />
 
-      <Card title="Ranked impact list" subtitle="Sorted by the backend impact score; delivered/cancelled shipments excluded.">
+      <Card title="Ranked Impact List" subtitle="Sorted by backend impact score · delivered/cancelled excluded">
         {affected.loading ? <LoadingSkeleton rows={6} /> : null}
         {affected.error ? <ErrorState error={affected.error} onRetry={affected.refresh} /> : null}
         {affected.data && affected.data.count === 0 ? (

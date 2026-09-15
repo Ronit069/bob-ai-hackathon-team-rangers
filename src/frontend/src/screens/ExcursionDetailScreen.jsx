@@ -40,9 +40,7 @@ export function ExcursionDetailScreen() {
         subtitle={`Shipment ${data.shipment_id} · ${formatDateTime(data.start_time)} → ${data.end_time ? formatDateTime(data.end_time) : "ongoing"}`}
         actions={
           <>
-            <Link className="btn" to={`/shipments/${data.shipment_id}/temperature`}>
-              Temperature history
-            </Link>
+            <Link className="btn" to={`/shipments/${data.shipment_id}/temperature`}>Temperature history</Link>
             <RefreshButton onClick={excursion.refresh} loading={excursion.loading} />
           </>
         }
@@ -50,45 +48,39 @@ export function ExcursionDetailScreen() {
 
       {data.severity === "unknown_review" ? <UnknownReviewBanner reason={data.severity_rationale} /> : null}
 
-      <Card title="Classification" subtitle="Severity, rationale and recommended action are backend decisions.">
-        <div className="grid cols-4">
+      <Card title="Classification" subtitle="Severity, rationale and recommended action are backend decisions">
+        <div className="grid cols-4" style={{ marginBottom: 16 }}>
           <div className="metric">
             <div className="label">Severity</div>
-            <div className="value">
-              <StatusBadge value={data.severity} />
-            </div>
+            <div className="value" style={{ fontSize: 14, paddingTop: 4 }}><StatusBadge value={data.severity} /></div>
             <div className="hint">{data.severity_rationale}</div>
           </div>
           <div className="metric">
             <div className="label">Duration</div>
-            <div className="value">{data.duration_min} min</div>
-            <div className="hint">peak deviation {data.peak_deviation_c} °C</div>
+            <div className="value">{data.duration_min} <span style={{ fontSize: 14, fontWeight: 500 }}>min</span></div>
+            <div className="hint">peak deviation <strong style={{ fontFamily: "var(--font-mono)", color: "var(--text)" }}>{data.peak_deviation_c}°C</strong></div>
           </div>
           <div className="metric">
             <div className="label">Data quality</div>
-            <div className="value">
-              <StatusBadge value={data.data_quality} />
-            </div>
+            <div className="value" style={{ fontSize: 14, paddingTop: 4 }}><StatusBadge value={data.data_quality} /></div>
             <div className="hint">policy {data.policy_id ?? "none"}</div>
           </div>
           <div className="metric">
             <div className="label">Time to delivery</div>
-            <div className="value">{data.time_to_delivery_hours ?? "—"} h</div>
+            <div className="value">{data.time_to_delivery_hours ?? "—"} <span style={{ fontSize: 14, fontWeight: 500 }}>h</span></div>
             <div className="hint">post-delivery: {data.post_delivery ? "yes" : "no"}</div>
           </div>
         </div>
-        <div className="mt">
-          <FactorList
-            factors={{
-              recommended_action: data.recommended_action,
-              status: data.status,
-              detected_at: data.detected_at,
-            }}
-          />
-        </div>
+        <FactorList
+          factors={{
+            recommended_action: data.recommended_action,
+            status: data.status,
+            detected_at: data.detected_at,
+          }}
+        />
       </Card>
 
-      <Card title="Human review" subtitle="Transitions are validated and audited by the backend (B-7).">
+      <Card title="Human Review" subtitle="Transitions are validated and audited by the backend">
         <ExcursionReviewActions excursion={data} onUpdated={() => excursion.refresh()} />
       </Card>
     </div>

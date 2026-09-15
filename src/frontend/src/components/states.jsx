@@ -12,10 +12,10 @@ export function LoadingSkeleton({ rows = 5, label = "Loading" }) {
 
 export function EmptyState({ title, message, action }) {
   return (
-    <div className="card" style={{ textAlign: "center", padding: "26px 16px" }}>
-      <h3>{title}</h3>
-      {message ? <p className="muted">{message}</p> : null}
-      {action ? <div className="mt">{action}</div> : null}
+    <div style={{ textAlign: "center", padding: "32px 16px" }}>
+      <p style={{ margin: "0 0 4px", fontWeight: 600, color: "var(--text-2)" }}>{title}</p>
+      {message ? <p className="muted small" style={{ margin: "0 0 12px" }}>{message}</p> : null}
+      {action ? <div>{action}</div> : null}
     </div>
   );
 }
@@ -31,7 +31,7 @@ export function ErrorState({ error, onRetry }) {
       </strong>
       {message}
       {onRetry ? (
-        <div className="mt">
+        <div style={{ marginTop: 8 }}>
           <button type="button" onClick={onRetry}>
             Retry
           </button>

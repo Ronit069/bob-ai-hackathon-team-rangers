@@ -30,8 +30,8 @@ export function SensorHealthScreen() {
   return (
     <div>
       <PageHeader
-        title="Sensor health"
-        subtitle="Per-shipment device status from the backend sensor block (B-2)."
+        title="Sensor Health"
+        subtitle="Per-shipment device status from the backend sensor block"
         actions={<RefreshButton onClick={sensors.refresh} loading={sensors.loading} />}
       />
 
@@ -39,24 +39,36 @@ export function SensorHealthScreen() {
         <UnknownReviewBanner reason={`${failed.length} sensor(s) not reporting`} />
       ) : null}
 
-      <Card title="Sensors" subtitle="Status thresholds (delayed/failed) are computed by the backend.">
+      <Card title="Sensors" subtitle="Status thresholds (delayed/failed) are computed by the backend">
         {sensors.loading ? <LoadingSkeleton rows={6} /> : null}
         {sensors.error ? <ErrorState error={sensors.error} onRetry={sensors.refresh} /> : null}
         {sensors.data && sensors.data.length === 0 ? <EmptyState title="No sensors reporting" /> : null}
         {sensors.data && sensors.data.length > 0 ? (
           <DataTable
             columns={[
-              { key: "shipment", header: "Shipment", render: (row) => <Link className="link" to={`/shipments/${row.shipment.id}/temperature`}>{row.shipment.id}</Link> },
-              { key: "sensor_id", header: "Sensor", render: (row) => row.sensor?.sensor_id ?? "—" },
+              {
+                key: "shipment",
+                header: "Shipment",
+                render: (row) => (
+                  <Link className="link" to={`/shipments/${row.shipment.id}/temperature`}
+                    style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>
+                    {row.shipment.id}
+                  </Link>
+                ),
+              },
+              { key: "sensor_id", header: "Sensor ID", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>{row.sensor?.sensor_id ?? "—"}</span> },
               { key: "status", header: "Status", render: (row) => <StatusBadge value={row.sensor?.status} /> },
-              { key: "last", header: "Last reading", render: (row) => formatDateTime(row.sensor?.last_reading_at) },
-              { key: "since", header: "Min since last", render: (row) => row.sensor?.minutes_since_last ?? "—" },
-              { key: "gaps", header: "Gaps", render: (row) => row.sensor?.gap_count ?? 0 },
-              { key: "readings", header: "Readings", render: (row) => row.readingCount },
+              { key: "last", header: "Last reading", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>{formatDateTime(row.sensor?.last_reading_at)}</span> },
+              { key: "since", header: "Min since", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.sensor?.minutes_since_last ?? "—"}</span> },
+              { key: "gaps", header: "Gaps", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.sensor?.gap_count ?? 0}</span> },
+              { key: "readings", header: "Readings", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.readingCount}</span> },
               {
                 key: "policy",
-                header: "Policy",
-                render: (row) => (row.policy ? `${row.policy.min_c}…${row.policy.max_c} °C` : <span className="badge review">missing</span>),
+                header: "Policy °C",
+                render: (row) => (row.policy
+                  ? <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.policy.min_c}…{row.policy.max_c}</span>
+                  : <span className="badge review">missing</span>
+                ),
               },
             ]}
             rows={sensors.data}

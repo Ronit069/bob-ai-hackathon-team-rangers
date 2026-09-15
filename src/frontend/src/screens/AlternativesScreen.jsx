@@ -46,7 +46,6 @@ export function AlternativesScreen() {
   const notActionable = routes.data?.not_actionable || carriers.data?.not_actionable;
 
   const renderOption = (option, type) => {
-    const target = type === "reroute" ? option.route : option.carrier;
     const title = type === "reroute" ? option.route.id : option.carrier.name;
     const subtitle =
       type === "reroute"
@@ -57,24 +56,25 @@ export function AlternativesScreen() {
       <div className="card" key={title} style={{ marginBottom: 12 }}>
         <header>
           <div>
-            <h3>
+            <h3 style={{ fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 600, textTransform: "none", letterSpacing: "0.01em", color: "var(--text)" }}>
               {title} {option.carrier ? <StatusBadge value={option.carrier.status} kind="carrier" /> : null}
             </h3>
             <p className="card-sub">{subtitle}</p>
           </div>
           <ScoreBar score={option.score} label="ranking score" />
         </header>
-        <FactorList factors={option.factors} />
-        <ReasonList reasons={option.reasons} />
-        <p className="small muted mt">
-          estimated cost {formatMoneyUsd(option.factors?.estimated_cost_usd)} · constraints checked:{" "}
-          {(option.constraints_checked ?? []).join(", ")}
-        </p>
-        <div className="row mt">
-          <button type="button" className="primary" disabled={busy || Boolean(created)} onClick={() => create(type, option)}>
-            Create pending recommendation
-          </button>
-          <span className="small muted">Human approval required.</span>
+        <div className="card-body">
+          <FactorList factors={option.factors} />
+          <ReasonList reasons={option.reasons} />
+          <p className="small muted" style={{ marginTop: 8, fontFamily: "var(--font-mono)", fontSize: 11 }}>
+            cost {formatMoneyUsd(option.factors?.estimated_cost_usd)} · constraints: {(option.constraints_checked ?? []).join(", ")}
+          </p>
+          <div className="row" style={{ marginTop: 12 }}>
+            <button type="button" className="primary" disabled={busy || Boolean(created)} onClick={() => create(type, option)}>
+              Create pending recommendation
+            </button>
+            <span className="small muted">Human approval required.</span>
+          </div>
         </div>
       </div>
     );
@@ -84,12 +84,10 @@ export function AlternativesScreen() {
     <div>
       <PageHeader
         title={`Alternatives · ${id}`}
-        subtitle="Feasible options only; rejected candidates carry the backend reason."
+        subtitle="Feasible options only; rejected candidates carry the backend reason"
         actions={
           <>
-            <Link className="btn" to={`/shipments/${id}`}>
-              Shipment detail
-            </Link>
+            <Link className="btn" to={`/shipments/${id}`}>Shipment detail</Link>
             <RefreshButton onClick={active.refresh} loading={active.loading} />
           </>
         }
@@ -106,7 +104,7 @@ export function AlternativesScreen() {
         onChange={(next) => setSearchParams({ tab: next })}
       />
 
-      <Card title={tab === "routes" ? "Ranked route options" : "Ranked carrier options"} subtitle="Backend scores, factors and reasons rendered verbatim.">
+      <Card title={tab === "routes" ? "Ranked Route Options" : "Ranked Carrier Options"} subtitle="Backend scores, factors and reasons rendered verbatim">
         {active.loading ? <LoadingSkeleton rows={5} /> : null}
         {active.error ? <ErrorState error={active.error} onRetry={active.refresh} /> : null}
         {active.data && active.data.count === 0 ? (
@@ -129,16 +127,12 @@ export function AlternativesScreen() {
       ) : null}
 
       {active.data?.rejected?.length > 0 ? (
-        <Card title="Rejected options" subtitle="Hard-constraint failures from the backend.">
+        <Card title="Rejected Options" subtitle="Hard-constraint failures — backend rejection reasons">
           <DataTable
             columns={[
-              { key: "target", header: "Candidate", render: (row) => row.route_id ?? row.carrier_id },
-              {
-                key: "rejected_reason",
-                header: "Reason",
-                render: (row) => <span className="badge warn">{String(row.rejected_reason).replace(/_/g, " ")}</span>,
-              },
-              { key: "details", header: "Details", render: (row) => (row.details ? JSON.stringify(row.details) : "—") },
+              { key: "target", header: "Candidate", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.route_id ?? row.carrier_id}</span> },
+              { key: "rejected_reason", header: "Reason", render: (row) => <span className="badge warn" style={{ textTransform: "none" }}>{String(row.rejected_reason).replace(/_/g, " ")}</span> },
+              { key: "details", header: "Details", render: (row) => <span className="small muted">{row.details ? JSON.stringify(row.details) : "—"}</span> },
             ]}
             rows={active.data.rejected}
             rowKey={(row, index) => `${row.route_id ?? row.carrier_id}-${index}`}

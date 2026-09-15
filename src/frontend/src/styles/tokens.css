@@ -1,23 +1,101 @@
 :root {
-  --bg: #f4f6fa;
-  --surface: #ffffff;
-  --border: #d8e0ea;
-  --text: #1b2430;
-  --muted: #64748b;
-  --primary: #1d4ed8;
-  --primary-soft: #e4ecff;
-  --ok: #15803d;
-  --ok-soft: #e8f7ee;
-  --warn: #b45309;
-  --warn-soft: #fdf3e3;
-  --danger: #b91c1c;
-  --danger-soft: #fdecec;
-  --review: #6d28d9;
-  --review-soft: #f1ebfe;
-  --neutral: #475569;
-  --neutral-soft: #eef2f7;
-  --radius: 8px;
-  --gap: 16px;
-  --mono: "Cascadia Code", "Consolas", monospace;
-  --sans: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* ── Surfaces ────────────────────────────────────────── */
+  --bg:              #f4f2ee;   /* warm off-white page bg */
+  --bg-subtle:       #efede8;   /* slightly deeper for nested sections */
+  --surface:         #ffffff;   /* primary panel bg */
+  --surface-raised:  #faf9f7;   /* hover / secondary bg */
+  --surface-tinted:  #f0ede8;   /* interactive accent tint */
+
+  /* ── Borders ─────────────────────────────────────────── */
+  --border:          #e3e0d8;   /* standard thin border */
+  --border-strong:   #c9c6be;   /* dividers, prominent lines */
+
+  /* ── Text ────────────────────────────────────────────── */
+  --text:            #18171a;   /* near-black charcoal */
+  --text-2:          #6a6762;   /* muted secondary */
+  --text-3:          #9b9790;   /* very muted tertiary */
+
+  /* ── Accent ──────────────────────────────────────────── */
+  --accent:          #256044;   /* deep muted green */
+  --accent-hover:    #1e4f38;   /* darker on hover */
+  --accent-dim:      #e6f0ea;   /* accent background tint */
+  --accent-border:   #b6d4c1;   /* accent border */
+
+  /* ── Semantic ────────────────────────────────────────── */
+  --red:             #b83226;
+  --red-hover:       #9e2a1f;
+  --red-dim:         #fcecea;
+  --red-border:      #f1b8b3;
+
+  --amber:           #ad6808;
+  --amber-hover:     #945908;
+  --amber-dim:       #fef5e7;
+  --amber-border:    #f5d49a;
+
+  --green:           #1a6337;
+  --green-dim:       #e8f3ec;
+  --green-border:    #a8d4b6;
+
+  --blue:            #1b4b8a;
+  --blue-dim:        #e8eef9;
+  --blue-border:     #a8bfdf;
+
+  --purple:          #5b21b6;
+  --purple-dim:      #f0ebfe;
+  --purple-border:   #c4b0f0;
+
+  /* ── Code / Mono backgrounds ─────────────────────────── */
+  --mono-bg:         #edebe5;
+  --code-bg:         #18171a;
+  --code-text:       #e6e3dc;
+
+  /* ── Glass (selective, only Bob / overlays) ──────────── */
+  --glass-bg:        rgba(255, 255, 255, 0.72);
+  --glass-border:    rgba(255, 255, 255, 0.55);
+  --glass-blur:      12px;
+  --glass-shadow:    0 4px 24px rgba(0, 0, 0, 0.10);
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-sans:       'Manrope', system-ui, -apple-system, sans-serif;
+  --font-mono:       'IBM Plex Mono', 'Fira Mono', 'Consolas', monospace;
+
+  /* ── Sizing ──────────────────────────────────────────── */
+  --radius-xs:       3px;
+  --radius-sm:       4px;
+  --radius:          6px;
+  --radius-lg:       8px;
+  --radius-xl:       12px;
+
+  /* ── Shadows ─────────────────────────────────────────── */
+  --shadow-xs:       0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm:       0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow:          0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md:       0 4px 14px rgba(0, 0, 0, 0.10), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-hover:    0 3px 10px rgba(0, 0, 0, 0.11), 0 1px 4px rgba(0, 0, 0, 0.07);
+
+  /* ── Transitions ─────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition:      200ms ease;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --gap:             16px;
+  --sidebar-width:   228px;
+
+  /* ── Legacy aliases (backward-compat) ────────────────── */
+  --muted:           var(--text-2);
+  --primary:         var(--accent);
+  --primary-soft:    var(--accent-dim);
+  --ok:              var(--green);
+  --ok-soft:         var(--green-dim);
+  --warn:            var(--amber);
+  --warn-soft:       var(--amber-dim);
+  --danger:          var(--red);
+  --danger-soft:     var(--red-dim);
+  --review:          var(--purple);
+  --review-soft:     var(--purple-dim);
+  --neutral:         var(--text-2);
+  --neutral-soft:    var(--surface-raised);
+  --sans:            var(--font-sans);
+  --mono:            var(--font-mono);
+  --shadow-sm:       var(--shadow-sm);
 }

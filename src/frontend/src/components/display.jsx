@@ -10,7 +10,7 @@ const LABELS = {
   at_risk: ["At risk", "warn"],
   unknown_review: ["Unknown / review", "review"],
   unaffected: ["Unaffected", "neutral"],
-  major: ["Major", "danger"],
+  major: ["Major", "warn"],
   warning: ["Warning", "warn"],
   open: ["Open", "warn"],
   acknowledged: ["Acknowledged", "info"],
@@ -124,22 +124,30 @@ export function JsonViewer({ value, maxHeight }) {
 
 export function EvidencePanel({ evidence }) {
   if (!evidence || evidence.length === 0) {
-    return <p className="muted">No tool calls were reported for this answer.</p>;
+    return <p className="muted small">No tool calls were reported for this answer.</p>;
   }
   return (
     <div>
       {evidence.map((entry, index) => (
         <details className="evidence" key={index} open={index === 0}>
           <summary>
-            Tool: {entry.tool ?? "unknown"}{" "}
-            <button type="button" className="link" onClick={() => copyJson(entry)}>
+            <span>
+              Tool: {entry.tool ?? "unknown"}
+            </span>
+            <button
+              type="button"
+              className="copy-btn"
+              onClick={(e) => { e.stopPropagation(); copyJson(entry); }}
+            >
               copy
             </button>
           </summary>
-          <div className="mt small muted">Input</div>
-          <JsonViewer value={entry.input ?? {}} maxHeight={120} />
-          <div className="mt small muted">Output (raw backend JSON)</div>
-          <JsonViewer value={entry.output ?? {}} maxHeight={220} />
+          <div className="evidence-body">
+            <div className="small muted" style={{ marginBottom: 4 }}>Input</div>
+            <JsonViewer value={entry.input ?? {}} maxHeight={120} />
+            <div className="small muted mt" style={{ marginBottom: 4 }}>Output (raw backend JSON)</div>
+            <JsonViewer value={entry.output ?? {}} maxHeight={220} />
+          </div>
         </details>
       ))}
     </div>
@@ -148,7 +156,7 @@ export function EvidencePanel({ evidence }) {
 
 export function DataTable({ columns, rows, emptyMessage = "No rows", rowKey, onRowClick }) {
   if (!rows || rows.length === 0) {
-    return <p className="muted">{emptyMessage}</p>;
+    return <p className="muted small">{emptyMessage}</p>;
   }
   return (
     <div style={{ overflowX: "auto" }}>

@@ -34,8 +34,6 @@ export function RedeploymentScreen() {
     }
   };
 
-  const notActionable = candidates.data?.rejected !== undefined && shipment.data && shipment.data.status === "delivered";
-
   return (
     <div>
       <PageHeader
@@ -43,9 +41,7 @@ export function RedeploymentScreen() {
         subtitle="Compatible idle assets ranked by the backend. Nothing is assigned automatically."
         actions={
           <>
-            <Link className="btn" to={`/shipments/${id}`}>
-              Shipment detail
-            </Link>
+            <Link className="btn" to={`/shipments/${id}`}>Shipment detail</Link>
             <RefreshButton onClick={candidates.refresh} loading={candidates.loading} />
           </>
         }
@@ -53,14 +49,14 @@ export function RedeploymentScreen() {
 
       {shipment.data?.status === "delivered" ? <NotActionableBanner reason="delivered" /> : null}
 
-      <Card title="Ranked candidates" subtitle="Capacity, refrigeration and distance filters already applied by the API.">
+      <Card title="Ranked Candidates" subtitle="Capacity, refrigeration and distance filters already applied by the API">
         {candidates.loading ? <LoadingSkeleton rows={5} /> : null}
         {candidates.error ? <ErrorState error={candidates.error} onRetry={candidates.refresh} /> : null}
         {candidates.data && candidates.data.count === 0 ? (
           <EmptyState title="No compatible idle assets" message="Check the rejection and exclusion reasons below." />
         ) : null}
         {candidates.data && candidates.data.count > 0 ? (
-          <div className="grid">
+          <div>
             {candidates.data.data.map((candidate) => (
               <RedeploymentCard key={candidate.asset.id} candidate={candidate} onSelect={create} busy={busy || Boolean(created)} />
             ))}
@@ -69,18 +65,18 @@ export function RedeploymentScreen() {
       </Card>
 
       {created ? (
-        <Card title={`Decision · ${created.id}`} subtitle="Human approval is recorded in the audit trail (D4: nothing is auto-executed).">
+        <Card title={`Decision · ${created.id}`} subtitle="Human approval is recorded in the audit trail — nothing is auto-executed.">
           <DecisionButtons recommendation={created} onDecided={(updated) => setCreated(updated)} />
         </Card>
       ) : null}
 
       {candidates.data?.rejected?.length > 0 ? (
-        <Card title="Rejected candidates" subtitle="Backend rejection reasons.">
+        <Card title="Rejected Candidates" subtitle="Hard-constraint failures — backend rejection reasons">
           <DataTable
             columns={[
-              { key: "asset_id", header: "Asset" },
-              { key: "rejected_reason", header: "Reason", render: (row) => <span className="badge warn">{String(row.rejected_reason).replace(/_/g, " ")}</span> },
-              { key: "details", header: "Details", render: (row) => (row.details ? JSON.stringify(row.details) : "—") },
+              { key: "asset_id", header: "Asset", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.asset_id}</span> },
+              { key: "rejected_reason", header: "Reason", render: (row) => <span className="badge warn" style={{ textTransform: "none" }}>{String(row.rejected_reason).replace(/_/g, " ")}</span> },
+              { key: "details", header: "Details", render: (row) => <span className="small muted">{row.details ? JSON.stringify(row.details) : "—"}</span> },
             ]}
             rows={candidates.data.rejected}
             rowKey={(row, index) => `${row.asset_id}-${index}`}
@@ -89,12 +85,12 @@ export function RedeploymentScreen() {
       ) : null}
 
       {candidates.data?.excluded?.length > 0 ? (
-        <Card title="Excluded assets" subtitle="Not idle (reserved, assigned, maintenance, retired or missing timestamps).">
+        <Card title="Excluded Assets" subtitle="Not idle — reserved, assigned, maintenance, retired or missing timestamps">
           <DataTable
             columns={[
-              { key: "asset_id", header: "Asset" },
-              { key: "reason", header: "Reason", render: (row) => <span className="badge review">{String(row.reason).replace(/_/g, " ")}</span> },
-              { key: "until", header: "Until", render: (row) => (row.until ? formatDateTime(row.until) : "—") },
+              { key: "asset_id", header: "Asset", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.asset_id}</span> },
+              { key: "reason", header: "Reason", render: (row) => <span className="badge review" style={{ textTransform: "none" }}>{String(row.reason).replace(/_/g, " ")}</span> },
+              { key: "until", header: "Until", render: (row) => (row.until ? <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>{formatDateTime(row.until)}</span> : <span className="muted">—</span>) },
             ]}
             rows={candidates.data.excluded}
             rowKey={(row, index) => `${row.asset_id}-${index}`}

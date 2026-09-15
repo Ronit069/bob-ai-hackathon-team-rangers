@@ -29,24 +29,40 @@ export function DisruptionsScreen() {
   };
 
   const columns = [
-    { key: "id", header: "ID" },
-    { key: "type", header: "Type", render: (row) => row.type.replace(/_/g, " ") },
+    {
+      key: "id",
+      header: "ID",
+      render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600, letterSpacing: "0.01em" }}>{row.id}</span>,
+    },
+    {
+      key: "type",
+      header: "Type",
+      render: (row) => <span className="badge neutral no-dot" style={{ textTransform: "none", fontSize: 11 }}>{row.type.replace(/_/g, " ")}</span>,
+    },
     { key: "region_code", header: "Region" },
-    { key: "window", header: "Window", render: (row) => `${formatDateTime(row.start_time)} → ${row.end_time ? formatDateTime(row.end_time) : "open-ended"}` },
-    { key: "severity", header: "Severity", render: (row) => row.severity },
+    { key: "severity", header: "Sev" },
+    {
+      key: "window",
+      header: "Window",
+      render: (row) => (
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-2)" }}>
+          {formatDateTime(row.start_time)} → {row.end_time ? formatDateTime(row.end_time) : "open"}
+        </span>
+      ),
+    },
     { key: "status", header: "Status", render: (row) => <StatusBadge value={row.status} /> },
     {
       key: "currently_active",
       header: "Active now",
-      render: (row) => (row.is_currently_active ? <StatusBadge value="active" /> : <span className="muted">no</span>),
+      render: (row) => (row.is_currently_active ? <StatusBadge value="active" /> : <span className="muted small">—</span>),
     },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
       render: (row) => (
         <div className="row">
           <button type="button" className="link" onClick={() => navigate(`/disruptions/${row.id}/affected`)}>
-            affected
+            affected →
           </button>
           {row.status === "scheduled" ? (
             <button type="button" className="link" onClick={() => transition(row, "active")}>
@@ -67,19 +83,19 @@ export function DisruptionsScreen() {
     <div>
       <PageHeader
         title="Disruptions"
-        subtitle="Create and manage the events that drive impact analysis."
+        subtitle="Create and manage events that drive impact analysis"
         actions={
           <>
             <RefreshButton onClick={disruptions.refresh} loading={disruptions.loading} />
-            <button type="button" className="primary" onClick={() => setShowForm((value) => !value)}>
-              {showForm ? "Hide form" : "Create disruption"}
+            <button type="button" className="primary" onClick={() => setShowForm((v) => !v)}>
+              {showForm ? "Cancel" : "Create disruption"}
             </button>
           </>
         }
       />
 
       {showForm ? (
-        <Card title="New disruption" subtitle="Validated server-side; duplicates are rejected with 409.">
+        <Card title="Create disruption" subtitle="Validated server-side; duplicates are rejected with 409">
           <DisruptionForm
             onCreated={(created) => {
               setToast({ message: `${created.id} created.`, tone: "ok" });
@@ -91,8 +107,8 @@ export function DisruptionsScreen() {
       ) : null}
 
       <Card
-        title="All disruptions"
-        subtitle="is_currently_active comes from the backend window rule."
+        title="All Disruptions"
+        subtitle="is_currently_active is computed by the backend window rule"
         actions={
           <FilterBar>
             <FilterField label="Status">
