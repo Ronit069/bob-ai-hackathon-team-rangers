@@ -1,13 +1,1 @@
-SUBMISSION-TIME ITEM: replace this file with the real demo video URL before the submission deadline.
-
-Accepted platforms: YouTube (unlisted), Loom, Box, Google Drive (view-only link).
-Video requirements (from submission template guide §4.5): 3–5 minutes, app starting up, a real user journey, actual output (not mocked).
-
-Recommended demo script:
-1. Start the app (backend + frontend), show the health check.
-2. Create a disruption (S2) → affected shipments (S3) → risk worklist (S1).
-3. Open S039, show combined score 0.728, route alternatives, create and approve a recommendation.
-4. Switch to cold-chain: alerts (S8), excursion detail with severity rationale (S10), temperature history (S9).
-5. Show MCP smoke output: cd src/mcp-server && npm run smoke (7/7 checks, oracle 0.728).
-6. Show Bob fallback (S13) or live Bob answer if credentials available.
-7. Show audit trail (S14) and reset: npm run seed.
+https://drive.google.com/file/d/18qFHmJ7F_vgKY4EtEphORCCjBs51_jyQ/view?usp=sharing

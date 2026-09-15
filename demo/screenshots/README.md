@@ -4,17 +4,18 @@
 
 Screenshots must show the actual running application against real data (not mocked). The submission template guide requires ≥ 3 screenshots.
 
-## Required Captures (≥ 3 minimum, 7 recommended)
+## Required Captures (≥ 3 minimum; 5 captured, 3 more recommended)
 
 | Filename | Screen | What to show |
 |---|---|---|
-| `01-overview-risk-worklist.png` | S1 Overview | Risk worklist with S039 at the top (combined score 0.728), active disruptions, alert counts |
-| `02-affected-shipments.png` | S3 Affected Shipments | D01 affected list — S039 critical, match reason, impact score |
-| `03-alternatives-comparison.png` | S5 Route/Carrier Comparison | Ranked alternatives with factor breakdown and rejected panel |
-| `04-fleet-redeployment.png` | S6/S7 Fleet + Redeployment | Idle assets list; redeployment candidates for S039 |
-| `05-coldchain-excursion.png` | S10 Excursion Detail | An open excursion with severity rationale (e.g. major `duration>tolerance`) |
-| `06-bob-evidence.png` | S13 Bob Chat | Either: grounded answer with evidence panel (if `BOB_ENABLED=true`), or the fallback panel (if disabled) |
-| `07-audit-trail.png` | S14 Audit | Audit trail after a recommendation has been approved |
+| `01_Overview.png` | S1 Overview | Risk worklist with S039 at the top (combined score 0.728), active disruptions, alert counts |
+| `02_AffectedShipments.png` | S3 Affected Shipments | D01 affected list — S039 critical, match reason, impact score |
+| `03_Alternatives.png` | S5 Route/Carrier Comparison | Ranked alternatives with factor breakdown and rejected panel |
+| `04_Disruptions.png` | S2 Disruptions | All disruptions — active/scheduled/resolved with the ACTIVE NOW window column |
+| `05_BobChat.png` | S13 Bob Chat | Grounded answer with evidence panel (S039 combined risk 0.728) |
+| `06-fleet-redeployment.png` | S6/S7 Fleet + Redeployment | Idle assets list; redeployment candidates for S039 |
+| `07-coldchain-excursion.png` | S10 Excursion Detail | An open excursion with severity rationale (e.g. major `duration>tolerance`) |
+| `08-audit-trail.png` | S14 Audit | Audit trail after a recommendation has been approved |
 
 ## How to Capture
 
