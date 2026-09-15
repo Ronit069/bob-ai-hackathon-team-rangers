@@ -1,17 +1,37 @@
-# Demo screenshots
+# Demo Screenshots
 
-Add at least **3 screenshots** of the running application before submission. Name them sequentially:
+**SUBMISSION-TIME ITEM:** Capture and add at least 3 screenshots of the running application before the submission deadline. Name them sequentially as listed below.
 
-- `01-home-dashboard.png`
-- `02-query-input.png`
-- `03-result-output.png`
+Screenshots must show the actual running application against real data (not mocked). The submission template guide requires ≥ 3 screenshots.
 
-Recommended captures (per the demo storyline):
+## Required Captures (≥ 3 minimum, 7 recommended)
 
-1. Overview with an active disruption and ranked worklist.
-2. Affected shipments with match reasons.
-3. Route/carrier comparison with factor breakdown.
-4. Fleet idle + redeployment recommendation.
-5. Cold-chain excursion severity with rationale.
-6. Bob answer with evidence panel.
-7. Audit trail after a human decision.
+| Filename | Screen | What to show |
+|---|---|---|
+| `01-overview-risk-worklist.png` | S1 Overview | Risk worklist with S039 at the top (combined score 0.728), active disruptions, alert counts |
+| `02-affected-shipments.png` | S3 Affected Shipments | D01 affected list — S039 critical, match reason, impact score |
+| `03-alternatives-comparison.png` | S5 Route/Carrier Comparison | Ranked alternatives with factor breakdown and rejected panel |
+| `04-fleet-redeployment.png` | S6/S7 Fleet + Redeployment | Idle assets list; redeployment candidates for S039 |
+| `05-coldchain-excursion.png` | S10 Excursion Detail | An open excursion with severity rationale (e.g. major `duration>tolerance`) |
+| `06-bob-evidence.png` | S13 Bob Chat | Either: grounded answer with evidence panel (if `BOB_ENABLED=true`), or the fallback panel (if disabled) |
+| `07-audit-trail.png` | S14 Audit | Audit trail after a recommendation has been approved |
+
+## How to Capture
+
+With both `npm run dev` (backend `:3001`) and `npm run dev` (frontend `:5173`) running:
+
+1. Run the demo freshness simulator first to clear sensor-failure banners:
+   ```bash
+   cd src/backend && node scripts/simulate-feed.js
+   ```
+2. Navigate to each screen and capture using your OS screenshot tool.
+3. Add the PNG files to this directory (`demo/screenshots/`).
+4. Verify each screenshot shows real data (not a loading or empty state).
+
+## Demo Reset
+
+To restore the exact fixture baseline before re-capturing:
+
+```bash
+cd src/backend && npm run seed
+```

@@ -1,26 +1,41 @@
-# Bobathon 2026 — submission metadata (Phase 1A skeleton).
-# TODO_REQUIRED: replace every TODO_REQUIRED value before submission.
-# Q4 (team identities) is deferred — DOES NOT BLOCK MVP development.
+# Bobathon 2026 — submission metadata
+# SUBMISSION-TIME ITEMS: replace every SUBMISSION_REQUIRED value with real data before the deadline.
+# Fields marked SUBMISSION_REQUIRED are genuine unknowns not derivable from the repository.
 
 team:
-  name: "TODO_REQUIRED"
+  name: "Rangers And"
   track: "AI"
   lead:
-    name: "TODO_REQUIRED"
-    email: "TODO_REQUIRED"
+    name: "SUBMISSION_REQUIRED"   # add real name before submission
+    email: "SUBMISSION_REQUIRED"  # add real email before submission
   members:
-    - name: "TODO_REQUIRED"
-      email: "TODO_REQUIRED"
+    - name: "SUBMISSION_REQUIRED" # Member 1 — Logistics & Optimisation Engineer
+      email: "SUBMISSION_REQUIRED"
+    - name: "SUBMISSION_REQUIRED" # Member 2 — Cold-Chain, AI & Bob Engineer
+      email: "SUBMISSION_REQUIRED"
 
 submission:
   title: "ChainSentinel — Supply Chain Disruption Assistant & Fleet Utilisation Optimizer"
   problem_statement: >
-    TODO_REQUIRED — 2–3 sentences. Source: docs/problem-statement.md.
+    Mid-size freight operators lose visibility during supply-chain disruptions because disruption
+    impact, fleet idle capacity, and cold-chain sensor integrity are managed in separate tools.
+    Identifying affected shipments, redeployable fleet, and cold-chain excursions requires manual
+    cross-referencing that does not scale — and temperature breaches are often discovered only at
+    delivery, after the cargo is already a write-off.
   solution_summary: >
-    TODO_REQUIRED — 2–3 sentences. Source: docs/solution-overview.md.
+    ChainSentinel is a Bob-powered logistics control tower that unifies disruption response, fleet
+    redeployment, and cold-chain monitoring into a single ranked, explainable, human-approved
+    action plan. A combined disruption + cold-chain priority score identifies the highest-risk
+    shipments; 11 read-only MCP tools ground Bob's answers in backend data with visible evidence;
+    no recommendation is auto-executed without operator approval and an audit trail entry.
   key_features:
-    - "Identify shipments affected by an active disruption, with match reasons"
-    - "Recommend ranked reroute and carrier alternatives with transparent factors"
-    - "Identify idle fleet assets and recommend compatible redeployments"
-    - "Monitor cold-chain IoT logs and classify temperature excursion severity before delivery"
-    - "Grounded IBM Bob assistant with visible evidence and human-approved decisions"
+    - "Disruption management with real-time affected-shipment detection, match reasons and impact scores"
+    - "Ranked route and carrier alternatives with transparent scoring and rejected-option explanations"
+    - "Fleet idle detection and compatibility-aware redeployment candidate ranking"
+    - "Cold-chain sensor monitoring — ingestion, data-quality flags, per-shipment sensor health"
+    - "Temperature excursion detection and configurable severity classification (Warning/Major/Critical/Unknown-Review)"
+    - "Combined disruption + cold-chain priority score for cross-domain risk ranking"
+    - "Human-approval recommendation lifecycle with append-only audit trail"
+    - "Grounded IBM Bob assistant (11 MCP tools) with raw evidence alongside every answer"
+  repository: "https://github.com/Ronit069/bob-ai-hackathon-team-rangersand"
+  demo_video: "SUBMISSION_REQUIRED"  # replace with real video URL before submission

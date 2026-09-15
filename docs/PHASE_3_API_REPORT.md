@@ -131,3 +131,18 @@
 - No formula, contract or ground-truth change; no ML; no secrets; no UI.
 
 **Next:** M2/shared endpoints (12–17, 18–23, 28) + MCP tool server, then the E2E flow test and `PHASE_3_API_REPORT` consolidation.
+
+---
+
+## Historical Note — Test-Count Clarification (Phase 7 documentation pass, F7)
+
+The test count reported in §5 above ("94/94 pass") reflects the **Phase 3A milestone only** — the scope covered by this report: Member 1's logistics endpoints (2–11, 24–27) built on the existing Phase 2 suite (64 tests + 30 new = 94 tests). This report was written before the Phase 3B batch (Member 2's cold-chain + shared + MCP endpoints and tests) was completed.
+
+The consolidated **final Phase 3 count was 138/138** (verified in `docs/PHASE_3_FINAL_REVIEW.md` §2), composed of:
+- Phase 2 suites: 64 tests (connection, validation, inserts, services)
+- Phase 3A new API tests: 30 tests (logistics + recommendations)
+- Phase 3B new tests: 44 tests (cold-chain 19, shared 10, MCP tools 7, MCP stdio server 4, E2E 4)
+
+After Phase 4 (stub-Bob proxy: +6 tests) and Phase 6 (write-throttle + reseed regression: +3 tests), the current baseline is **147/147** (as verified in `docs/PHASE_6_INTEGRATION_REPORT.md` §10).
+
+The authoritative Phase 3 completion evidence is `docs/PHASE_3_FINAL_REVIEW.md`. This report remains as the Phase 3A scope record.
