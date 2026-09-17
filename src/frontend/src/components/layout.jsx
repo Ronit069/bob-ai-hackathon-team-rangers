@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { api } from "../api/endpoints.js";
 import { useApi } from "../hooks/useApi.js";
@@ -80,6 +81,23 @@ function IconBob() {
   );
 }
 
+function IconPanelToggle({ collapsed }) {
+  return (
+    <svg className="nav-toggle-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d={collapsed ? "M6 3L11 8L6 13" : "M10 3L5 8L10 13"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.5 3V13" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.65" />
+    </svg>
+  );
+}
+
+function IconMenu() {
+  return (
+    <svg className="nav-toggle-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const NAV = [
   { group: "CONTROL" },
   { to: "/", label: "Overview", end: true, Icon: IconOverview },
@@ -94,12 +112,31 @@ const NAV = [
   { to: "/chat", label: "Bob Chat", Icon: IconBob },
 ];
 
-export function Navigation() {
+export function Navigation({ collapsed, mobileOpen, onToggle, onClose }) {
   return (
-    <nav className="app-nav">
+    <>
+      <button
+        type="button"
+        className={`nav-scrim ${mobileOpen ? "visible" : ""}`}
+        aria-label="Close navigation"
+        onClick={onClose}
+      />
+      <nav className={`app-nav ${collapsed ? "collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
+      <div className="nav-topline">
       <div className="nav-brand">
         <span className="nav-brand-name">ChainSentinel</span>
         <span className="nav-brand-tagline">L2 Control Tower</span>
+      </div>
+      <button
+        type="button"
+        className="nav-collapse-toggle"
+        onClick={onToggle}
+        aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+        aria-expanded={!collapsed}
+        title={collapsed ? "Expand navigation" : "Collapse navigation"}
+      >
+        <IconPanelToggle collapsed={collapsed} />
+      </button>
       </div>
       {NAV.map((item, index) =>
         item.group ? (
@@ -107,25 +144,65 @@ export function Navigation() {
             {item.group}
           </div>
         ) : (
-          <NavLink key={item.to} to={item.to} end={item.end}>
+          <NavLink key={item.to} to={item.to} end={item.end} onClick={onClose} title={collapsed ? item.label : undefined}>
             {item.Icon ? <item.Icon /> : null}
-            {item.label}
+            <span className="nav-link-label">{item.label}</span>
           </NavLink>
         ),
       )}
-    </nav>
+      </nav>
+    </>
   );
 }
 
 export function AppShell({ children }) {
   const health = useApi(() => api.health(), []);
   const up = health.data?.status === "ok";
+  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || "dark");
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem("chainsentinel-nav-collapsed") === "true");
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("chainsentinel-theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("chainsentinel-nav-collapsed", String(collapsed));
+  }, [collapsed]);
+
+  const toggleTheme = () => setTheme((current) => current === "dark" ? "light" : "dark");
+  const nextTheme = theme === "dark" ? "Light" : "Dark";
 
   return (
-    <div className="app-shell">
-      <Navigation />
+    <div className={`app-shell ${collapsed ? "nav-collapsed" : ""}`}>
+      <Navigation
+        collapsed={collapsed}
+        mobileOpen={mobileOpen}
+        onToggle={() => setCollapsed((current) => !current)}
+        onClose={() => setMobileOpen(false)}
+      />
       <main className="app-main">
         <div className="app-header">
+          <button
+            type="button"
+            className="mobile-nav-toggle"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation"
+            aria-expanded={mobileOpen}
+          >
+            <IconMenu />
+          </button>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${nextTheme} Mode`}
+            title={`Switch to ${nextTheme} Mode`}
+          >
+            <span className="theme-toggle-icon" aria-hidden="true">{theme === "dark" ? "☼" : "◐"}</span>
+            {nextTheme} Mode
+          </button>
           <span className={`health-dot ${up ? "up" : health.error ? "down" : ""}`}>
             <span className="dot" />
             {up ? "backend ok" : health.error ? "backend down" : "checking…"}
