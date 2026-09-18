@@ -80,22 +80,25 @@ export function BobChatScreen() {
           </form>
         </div>
         {/* Suggested questions */}
-        <div style={{ padding: "10px 18px", display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-          <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-3)", flexShrink: 0 }}>
+        <div style={{ padding: "12px 18px" }}>
+          <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-3)", display: "block", marginBottom: 8 }}>
             Suggested
           </span>
-          {SUGGESTED.map((question) => (
-            <button
-              key={question}
-              type="button"
-              className="link"
-              disabled={unavailable}
-              onClick={() => setPrompt(question)}
-              style={{ fontSize: 12, color: "var(--text-2)" }}
-            >
-              {question}
-            </button>
-          ))}
+          <ul style={{ margin: 0, paddingLeft: 20, listStyleType: "disc" }}>
+            {SUGGESTED.map((question) => (
+              <li key={question} style={{ marginBottom: 6, color: "var(--brand)" }}>
+                <button
+                  type="button"
+                  className="link"
+                  disabled={unavailable}
+                  onClick={() => setPrompt(question)}
+                  style={{ fontSize: 12.5, color: "var(--text-2)", textAlign: "left", cursor: "pointer" }}
+                >
+                  {question}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
