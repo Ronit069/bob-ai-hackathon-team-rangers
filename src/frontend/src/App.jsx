@@ -14,6 +14,7 @@ import { ExcursionDetailScreen } from "./screens/ExcursionDetailScreen.jsx";
 import { SensorHealthScreen } from "./screens/SensorHealthScreen.jsx";
 import { RiskExplanationScreen } from "./screens/RiskExplanationScreen.jsx";
 import { BobChatScreen } from "./screens/BobChatScreen.jsx";
+import { CommanderScreen } from "./screens/CommanderScreen.jsx";
 import { AuditScreen } from "./screens/AuditScreen.jsx";
 
 export function App() {
@@ -34,6 +35,7 @@ export function App() {
           <Route path="/excursions/:id" element={<ExcursionDetailScreen />} />
           <Route path="/sensors" element={<SensorHealthScreen />} />
           <Route path="/chat" element={<BobChatScreen />} />
+          <Route path="/commander" element={<CommanderScreen />} />
           <Route path="/audit" element={<AuditScreen />} />
           <Route
             path="*"

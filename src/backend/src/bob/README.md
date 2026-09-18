@@ -1,13 +1,15 @@
-# bob/ — optional Bob query proxy (M2)
+# bob/ — grounded Bob query handler (M2)
 
-Owner: Member 2. Placeholder in Phase 1A.
+**Status:** implemented. `POST /api/bob/query` returns `{ answer, evidence: [{tool, input, output}], tool_calls }`.
 
-Planned contents (Phase 4):
-- `POST /api/bob/query` — forwards a prompt to the configured Bob/MCP gateway.
-- Returns `{ answer, evidence: [{tool, input, output}], tool_calls }`.
-- Returns `503 BOB_UNAVAILABLE` when `BOB_ENABLED=false` or Bob is unreachable.
-- Never invents data; evidence is the raw tool JSON.
+## Modes (contract: `docs/phase-0/api-contract.md` §3.23, decision D2)
 
-The primary Bob path is the MCP tool server (`src/mcp-server/`) calling the REST API; this proxy exists only for the in-app chat panel when credentials are available (Q6).
+| `BOB_ENABLED` | `BOB_API_URL` | Behaviour |
+|---|---|---|
+| `false` (default) | any | `503 BOB_UNAVAILABLE`, `details.reason = bob_disabled`; the dashboard stays fully usable |
+| `true` | set | forwards `prompt` + the 10 grounding rules to the Bob/MCP gateway with bearer `BOB_API_KEY`; gateway failure/unreachable → `503 BOB_UNAVAILABLE`, `details.reason = bob_unreachable` |
+| `true` | empty | local grounded engine (`engine.js`): intent detection → MCP tool calls → grounded answer synthesis; no external API or credentials |
 
-Contract: `docs/phase-0/member-2-bob-integration.md`, `docs/phase-0/api-contract.md` §3.23.
+- The local engine reuses the frozen 11-tool MCP layer (`callTool`) and calls the backend REST API only.
+- The API key is read from the environment and used only in the outbound `Authorization` header — never logged, never in payloads.
+- References: `docs/phase-0/member-2-bob-integration.md` §4–§6, `docs/phase-0/api-contract.md` §3.23.

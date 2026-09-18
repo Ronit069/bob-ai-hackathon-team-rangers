@@ -20,6 +20,24 @@ for (const envPath of [path.join(backendRoot, ".env"), path.join(srcRoot, ".env"
 const env = process.env;
 const num = (value, fallback) => (value === undefined || value === "" ? fallback : Number(value));
 
+// IBM watsonx.ai / Granite boundary. Credentials stay server-side; values that are
+// empty or still placeholders (YOUR_*_HERE) are treated as "not configured" and are
+// never sent anywhere, returned by APIs, or logged.
+const WATSONX_PLACEHOLDER = /^YOUR_[A-Z0-9_]*_HERE$/;
+const readWatsonx = (value) => {
+  const trimmed = String(value ?? "").trim();
+  return trimmed === "" || WATSONX_PLACEHOLDER.test(trimmed) ? "" : trimmed;
+};
+const watsonxApiKey = readWatsonx(env.WATSONX_API_KEY);
+const watsonxProjectId = readWatsonx(env.WATSONX_PROJECT_ID);
+const watsonxUrl = readWatsonx(env.WATSONX_URL).replace(/\/+$/, "");
+const watsonxModelId = readWatsonx(env.WATSONX_MODEL_ID) || "ibm/granite-3-8b-instruct";
+const watsonxMissing = [
+  watsonxApiKey ? null : "WATSONX_API_KEY",
+  watsonxProjectId ? null : "WATSONX_PROJECT_ID",
+  watsonxUrl ? null : "WATSONX_URL",
+].filter(Boolean);
+
 export const config = {
   port: num(env.PORT, 3001),
   nodeEnv: env.NODE_ENV ?? "development",
@@ -39,4 +57,17 @@ export const config = {
   aiBriefProviderTimeoutMs: num(env.AI_BRIEF_PROVIDER_TIMEOUT_MS, 15000),
   aiBriefMaxPromptChars: num(env.AI_BRIEF_MAX_PROMPT_CHARS, 12000),
   aiBriefMaxResponseChars: num(env.AI_BRIEF_MAX_RESPONSE_CHARS, 8000),
+  // Feature 2 — AI Incident Commander (disabled by default; no AI/tool orchestration
+  // happens while disabled). Reuses the Feature 1 provider and prompt bounds.
+  aiIncidentCommanderEnabled: env.FEATURE_AI_INCIDENT_COMMANDER === "true",
+  // Centralized Granite configuration (Feature 2 preparation). `configured` is true
+  // only when every required value is a real, non-placeholder value.
+  watsonx: {
+    apiKey: watsonxApiKey,
+    projectId: watsonxProjectId,
+    url: watsonxUrl,
+    modelId: watsonxModelId,
+    configured: watsonxMissing.length === 0,
+    missing: watsonxMissing,
+  },
 };

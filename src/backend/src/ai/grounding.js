@@ -76,7 +76,10 @@ export function actionFamilies(text) {
   return families;
 }
 
-export function validateBriefGrounding(brief, evidence) {
+// checkRecommendation: Feature 1 always enforces action-family consistency with the
+// deterministic cold-chain action. The Commander passes false only when its evidence
+// contains no deterministic recommended_action (e.g. an incident with no shipments).
+export function validateBriefGrounding(brief, evidence, { checkRecommendation = true } = {}) {
   const text = [
     brief.summary,
     brief.whyItMatters,
@@ -114,11 +117,13 @@ export function validateBriefGrounding(brief, evidence) {
     }
   }
 
-  const deterministicFamilies = actionFamilies(evidence.coldchain?.recommended_action);
-  const briefFamilies = actionFamilies(brief.recommendedNextStep);
-  for (const family of briefFamilies) {
-    if (!deterministicFamilies.has(family) && violations.length < 10) {
-      violations.push(`recommendation_conflict:${family}`);
+  if (checkRecommendation) {
+    const deterministicFamilies = actionFamilies(evidence.coldchain?.recommended_action);
+    const briefFamilies = actionFamilies(brief.recommendedNextStep);
+    for (const family of briefFamilies) {
+      if (!deterministicFamilies.has(family) && violations.length < 10) {
+        violations.push(`recommendation_conflict:${family}`);
+      }
     }
   }
 

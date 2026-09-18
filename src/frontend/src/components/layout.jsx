@@ -98,6 +98,16 @@ function IconMenu() {
   );
 }
 
+function IconCommander() {
+  return (
+    <svg className="nav-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 13.5L8 2L14 13.5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 9.5H11" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/>
+      <circle cx="8" cy="13.5" r="0.9" fill="currentColor"/>
+    </svg>
+  );
+}
+
 const NAV = [
   { group: "CONTROL" },
   { to: "/", label: "Overview", end: true, Icon: IconOverview },
@@ -110,6 +120,7 @@ const NAV = [
   { to: "/audit", label: "Audit Trail", Icon: IconAudit },
   { group: "BOB" },
   { to: "/chat", label: "Bob Chat", Icon: IconBob },
+  { to: "/commander", label: "Incident Commander", Icon: IconCommander },
 ];
 
 export function Navigation({ collapsed, mobileOpen, onToggle, onClose }) {

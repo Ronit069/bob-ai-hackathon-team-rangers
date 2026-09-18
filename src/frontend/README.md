@@ -21,7 +21,7 @@ no CORS configuration, no credentials and **no frontend `.env` file**.
 ## Test
 
 ```bash
-npm test        # 49 tests: API client, shared components, all 14 screens, safety scan
+npm test        # 64 tests: API client, shared components, all 15 screens, safety scan
 npm run build   # production build
 ```
 
@@ -46,6 +46,7 @@ scoring weights, severity tables, formula assignments, `process.env` access or c
 | `/shipments/:id/risk` | S12 Risk explanation (RC-3 factors) | M2 lead |
 | `/chat` | S13 Bob chat + evidence panel (503 fallback first-class) | M2 |
 | `/audit` | S14 Audit trail | Shared |
+| `/commander` | S15 AI Incident Commander (Feature 2; feature-flagged) | M2/AI |
 
 ## Rules
 

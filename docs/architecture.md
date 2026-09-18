@@ -58,7 +58,8 @@ The frontend communicates with the backend exclusively through the Vite dev prox
 | `src/coldchain/` | 12–17, 28 | Sensor readings, quality, excursions, severity, policies, alerts |
 | `src/risk/` | 18–19 | Combined risk score, snapshots, ranked overview |
 | `src/audit/` | 20–23 | Append-only audit, recommendation decisions |
-| `src/bob/` | — | Optional Bob proxy (`BOB_ENABLED` flag); `POST /api/bob/query` |
+| `src/bob/` | — | Optional Bob query handler (`BOB_ENABLED` flag): gateway forward or credential-free local grounded engine |
+| `src/ai/` | — | Feature-flagged AI layer: grounded incident brief (Feature 1) and AI Incident Commander (Feature 2) |
 
 - **28 REST endpoints** (see `docs/phase-0/api-contract.md` for the full contract).
 - **Formula location:** All scoring formulas live in service files (`matching.service.js`, `alternatives.service.js`, `fleet.service.js`, `excursion.service.js`, `risk.service.js`). Route handlers contain no formula constants.
@@ -119,12 +120,25 @@ The frontend communicates with the backend exclusively through the Vite dev prox
 
 ```
 1. Operator sends question (POST /api/bob/query)
-2. Backend proxy forwards to Bob with grounding rules + bearer auth
-3. Bob calls MCP tools over stdio
+2. Backend forwards to the configured Bob/MCP gateway with grounding rules + bearer auth;
+   without BOB_API_URL the credential-free local grounded engine runs instead
+3. Bob calls MCP tools over stdio (gateway) or in-process `callTool` (local engine)
 4. Each tool calls one backend REST endpoint (GET only)
 5. Bob synthesises answer from tool JSON only
 6. Response contains answer + evidence (tool name, input, raw JSON)
 7. Frontend displays answer alongside evidence panel
+```
+
+### AI Incident Commander Flow (Feature 2, when FEATURE_AI_INCIDENT_COMMANDER=true)
+
+```
+1. Operator sends a command (POST /api/ai/incident-command)
+2. Validated intent (existing AI provider, deterministic fallback) selects a fixed server-side plan
+3. The plan runs frozen read-only MCP tools through `callTool`
+4. ChainSentinel deterministic services produce the results
+5. Command evidence is assembled and grounded by the Feature 1 validator
+6. Explanation returned with tool activity + evidence; CREATE_PROPOSAL creates a
+   pending recommendation via POST /api/recommendations and stops at human approval
 ```
 
 ---

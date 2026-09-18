@@ -500,3 +500,25 @@ If **every** reading in the batch fails validation, the request fails with `400 
 ### D3 — MCP transport (5)
 
 The MCP tool catalogue and schemas in §5 are unchanged. Transport is **stdio**, with the SDK version pinned at implementation time; no additional tools.
+
+---
+
+## 9. Additive AI-layer endpoints (Feature 1/2 — feature-flagged)
+
+**Recorded:** 2026-09-19. These endpoints are additive; they change nothing in §3–§5, add no MCP tool and no schema change. Both are disabled by default, reuse the existing deterministic services, and never mutate operational state.
+
+### 9.1 `POST /api/ai/incident-brief` (Feature 1)
+
+- **Body:** `{ "shipment_id": "S039" }`
+- **Response:** grounded brief + `status`, `brief_source`, `fallback_reason`, `provider_name`, `grounding`, `evidence`, `generated_at`.
+- **Flag:** `FEATURE_AI_INCIDENT_BRIEF` (default `false`). When disabled/unavailable the deterministic fallback is returned and no provider call is made.
+- **Rules:** never mutates risk, recommendation, excursion or audit rows.
+
+### 9.2 `POST /api/ai/incident-command` (Feature 2 — AI Incident Commander)
+
+- **Body:** `{ "command": "Investigate the Mumbai port disruption." }`
+- **Response:** `status`, `intent` (validated), `intent_source`, `fallback_reason`, `provider_name`, `clarification`, `grounding`, `explanation`, `evidence`, `tool_activity`, `proposal`, `proposal_status`, `partial`, `missing_tools`, `generated_at`.
+- **Statuses:** `FEATURE_DISABLED` · `CLARIFICATION_REQUIRED` · `VALIDATED_AI` · `DETERMINISTIC_FALLBACK` · `PROVIDER_UNAVAILABLE` · `INVALID_AI_OUTPUT` · `GROUNDING_FAILED`.
+- **Flag:** `FEATURE_AI_INCIDENT_COMMANDER` (default `false`). While disabled: no AI request and no MCP orchestration; the deterministic dashboard is unaffected.
+- **Rules:** the executed tool plan is fixed server-side and uses only the 11 frozen read-only MCP tools; model output is schema-validated and never selects tools. Mutating/decision endpoints are never called. `CREATE_PROPOSAL` uses `POST /api/recommendations` (existing validation, duplicate guard and audit) and stops at `pending` human approval.
+- **Grounding:** reuses the Feature 1 validator (`src/backend/src/ai/grounding.js`); ungrounded AI text is discarded in favour of the deterministic explanation.

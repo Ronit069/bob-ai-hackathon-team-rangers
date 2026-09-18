@@ -63,6 +63,9 @@ export const api = {
   // Grounded AI incident brief (feature-flagged server-side; deterministic fallback otherwise)
   incidentBrief: (body) => request("/ai/incident-brief", { method: "POST", body }),
 
+  // AI Incident Commander (feature-flagged server-side; proposal stops at pending approval)
+  incidentCommand: (body) => request("/ai/incident-command", { method: "POST", body }),
+
   // 26/27/28 — fleet view, carriers, excursion review
   fleet: (query) => request("/fleet", { query }),
   carriers: (query) => request("/carriers", { query }),

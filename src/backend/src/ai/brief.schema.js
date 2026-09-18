@@ -18,7 +18,9 @@ export const aiBriefSchema = z
   })
   .strict();
 
-export function parseAiBrief(text, { maxChars = 8000 } = {}) {
+// Reusable JSON-object extraction shared by the grounded brief and the Commander intent
+// parser: both consume model output that must contain exactly one JSON object.
+export function extractJsonObject(text, { maxChars = 8000 } = {}) {
   if (typeof text !== "string" || text.trim() === "") {
     return { ok: false, reason: "empty_response" };
   }
@@ -32,14 +34,18 @@ export function parseAiBrief(text, { maxChars = 8000 } = {}) {
     return { ok: false, reason: "no_json_object" };
   }
 
-  let parsed;
   try {
-    parsed = JSON.parse(trimmed.slice(start, end + 1));
+    return { ok: true, data: JSON.parse(trimmed.slice(start, end + 1)) };
   } catch {
     return { ok: false, reason: "invalid_json" };
   }
+}
 
-  const result = aiBriefSchema.safeParse(parsed);
+export function parseAiBrief(text, { maxChars = 8000 } = {}) {
+  const extracted = extractJsonObject(text, { maxChars });
+  if (!extracted.ok) return extracted;
+
+  const result = aiBriefSchema.safeParse(extracted.data);
   if (!result.success) {
     return {
       ok: false,

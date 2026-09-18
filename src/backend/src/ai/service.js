@@ -58,7 +58,7 @@ export async function generateIncidentBrief({
       status: BRIEF_STATUS.PROVIDER_UNAVAILABLE,
       brief: fallback,
       briefSource: "deterministic",
-      fallbackReason: "provider_not_configured",
+      fallbackReason: provider?.reason ?? "provider_not_configured",
       providerName: provider?.name ?? null,
     });
   }

@@ -35,6 +35,7 @@ ChainSentinel is a Bob-powered logistics control tower that turns a declared dis
 - **Combined priority score:** `combined_score = 0.5 × disruption_risk + 0.5 × coldchain_risk` produces one ranked worklist across both domains.
 - **Human-approval lifecycle:** pending → accepted / rejected / modified, with an append-only audit trail for every decision.
 - **Grounded Bob assistant:** 11 read-only MCP tools with evidence shown alongside every answer; the dashboard is fully functional when Bob is unavailable.
+- **AI Incident Commander (Feature 2):** natural-language commands become validated intents executed against the frozen read-only MCP tools; grounded responses reuse the deterministic risk/recommendation engines, proposals stop at human approval, and unknown or ambiguous requests ask for clarification instead of guessing.
 
 ---
 
@@ -44,7 +45,7 @@ ChainSentinel is a Bob-powered logistics control tower that turns a declared dis
 |---|---|
 | **Languages** | JavaScript (ESM), Python 3.11, SQL |
 | **Frameworks** | Node.js 20 + Express 4, React 18 + Vite 5, React Router 6, Recharts, zod |
-| **IBM Technologies** | IBM Bob (MCP stdio tool server — 11 read-only tools + grounded chat proxy) |
+| **IBM Technologies** | IBM Bob (MCP stdio tool server — 11 read-only tools + grounded chat handler) · IBM Granite/watsonx.ai configuration boundary (`ibm/granite-3-8b-instruct`) |
 | **Databases** | PostgreSQL 16 (Docker Compose) |
 | **Other** | Docker, pg (no ORM), plain CSS, Node/Python standard-library test runners |
 
