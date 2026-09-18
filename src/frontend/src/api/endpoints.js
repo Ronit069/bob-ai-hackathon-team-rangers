@@ -60,6 +60,9 @@ export const api = {
   audit: (query) => request("/audit", { query }),
   bobQuery: (body) => request("/bob/query", { method: "POST", body }),
 
+  // Grounded AI incident brief (feature-flagged server-side; deterministic fallback otherwise)
+  incidentBrief: (body) => request("/ai/incident-brief", { method: "POST", body }),
+
   // 26/27/28 — fleet view, carriers, excursion review
   fleet: (query) => request("/fleet", { query }),
   carriers: (query) => request("/carriers", { query }),

@@ -4,6 +4,7 @@ import { useApi } from "../hooks/useApi.js";
 import { Card, PageHeader, RefreshButton } from "../components/layout.jsx";
 import { RiskFactorTable } from "../components/domain.jsx";
 import { ScoreBar } from "../components/display.jsx";
+import { IncidentBriefCard } from "../components/incidentBrief.jsx";
 import { Banner, ErrorState, LoadingSkeleton } from "../components/states.jsx";
 import { formatDateTime } from "../utils/format.js";
 
@@ -68,6 +69,8 @@ export function RiskExplanationScreen() {
           </Card>
         </>
       ) : null}
+
+      <IncidentBriefCard shipmentId={id} />
     </div>
   );
 }

@@ -619,6 +619,12 @@ export const bobQuerySchema = z
   })
   .strict();
 
+export const incidentBriefInputSchema = z
+  .object({
+    shipment_id: z.string().regex(/^S\d{3}$/, "must match S###"),
+  })
+  .strict();
+
 // ---------------------------------------------------------------------------
 // Helper
 // ---------------------------------------------------------------------------

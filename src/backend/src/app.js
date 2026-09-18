@@ -9,8 +9,9 @@ import { createColdchainRouter } from "./coldchain/routes.js";
 import { createRiskRouter } from "./risk/routes.js";
 import { createAuditRouter } from "./audit/routes.js";
 import { createBobRouter } from "./bob/routes.js";
+import { createAiRouter } from "./ai/routes.js";
 
-export function createApp({ db = getPool() } = {}) {
+export function createApp({ db = getPool(), aiProvider = null } = {}) {
   const app = express();
   app.use(express.json({ limit: "1mb" }));
 
@@ -35,6 +36,7 @@ export function createApp({ db = getPool() } = {}) {
   app.use("/api", createRiskRouter(db));
   app.use("/api", createAuditRouter(db));
   app.use("/api", createBobRouter());
+  app.use("/api", createAiRouter(db, { provider: aiProvider }));
 
   // Unknown /api paths -> standard 404 envelope (Phase 6 / F8).
   app.all("/api/*", unknownRouteHandler);

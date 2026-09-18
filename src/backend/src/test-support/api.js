@@ -1,8 +1,8 @@
 // API test helpers — kept under src/ so Node's test discovery does not run this file.
 import { createApp } from "../app.js";
 
-export async function startTestServer(db) {
-  const app = createApp({ db });
+export async function startTestServer(db, { aiProvider = null } = {}) {
+  const app = createApp({ db, aiProvider });
   const server = app.listen(0);
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();

@@ -35,4 +35,8 @@ export const config = {
   riskBeta: num(env.RISK_BETA, 0.5),
   sensorIntervalMin: num(env.SENSOR_INTERVAL_MIN, 15),
   excursionGroupGapMinutes: num(env.EXCURSION_GROUP_GAP_MINUTES, 30),
+  aiIncidentBriefEnabled: env.FEATURE_AI_INCIDENT_BRIEF === "true",
+  aiBriefProviderTimeoutMs: num(env.AI_BRIEF_PROVIDER_TIMEOUT_MS, 15000),
+  aiBriefMaxPromptChars: num(env.AI_BRIEF_MAX_PROMPT_CHARS, 12000),
+  aiBriefMaxResponseChars: num(env.AI_BRIEF_MAX_RESPONSE_CHARS, 8000),
 };
