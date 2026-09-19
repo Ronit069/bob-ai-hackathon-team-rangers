@@ -306,7 +306,7 @@ body {
 }
 
 .theme-toggle:hover { color: var(--text); border-color: var(--border-strong); }
-.theme-toggle-icon { font-size: 14px; line-height: 1; }
+.theme-toggle-icon { display: inline-flex; align-items: center; line-height: 1; }
 
 /* ── Health dot ──────────────────────────────────────────── */
 .health-dot {
@@ -453,7 +453,8 @@ body {
 @media (max-width: 480px) {
   .theme-toggle { padding: 0 8px; }
   .theme-toggle { font-size: 0; gap: 0; width: 34px; }
-  .theme-toggle-icon { font-size: 16px; }
+  .theme-toggle-icon { font-size: 0; width: 16px; height: 16px; }
+  .theme-toggle-icon svg { width: 16px; height: 16px; }
   .health-dot { max-width: 34px; overflow: hidden; padding-left: 9px; padding-right: 9px; }
   .health-dot:not(.up):not(.down) { max-width: 34px; }
 }

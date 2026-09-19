@@ -79,7 +79,7 @@ export function BobChatScreen() {
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
                 placeholder='e.g. "Which shipments are affected by the port strike?"'
-                style={{ flex: 1, background: "rgba(255,255,255,0.85)", fontSize: 14, height: 38 }}
+                style={{ flex: 1, fontSize: 14, height: 38 }}
                 disabled={unavailable}
               />
               <button

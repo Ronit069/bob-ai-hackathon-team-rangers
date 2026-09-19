@@ -108,7 +108,13 @@
   --gap:             18px;
   --sidebar-width:   236px;
 
+  /* ── Form inputs ────────────────────────────────────────── */
+  --input-bg:        #0d1828;
+  --input-bg-focus:  #0f1b2d;
+  --input-focus-shadow: rgba(111, 230, 184, 0.14);
+
   /* ── Legacy aliases (backward-compat) ───────────────────── */
+  --brand:           var(--accent);
   --muted:           var(--text-2);
   --primary:         var(--accent);
   --primary-soft:    var(--accent-dim);
@@ -199,5 +205,9 @@
   --shadow:          0 10px 24px rgba(27, 52, 65, 0.11), 0 4px 8px rgba(27, 52, 65, 0.06);
   --shadow-md:       0 18px 36px rgba(27, 52, 65, 0.14), 0 8px 16px rgba(27, 52, 65, 0.08);
   --shadow-hover:    0 20px 38px rgba(27, 52, 65, 0.15), 0 8px 18px rgba(27, 52, 65, 0.08);
+
+  --input-bg:        #ffffff;
+  --input-bg-focus:  #f8fafb;
+  --input-focus-shadow: rgba(22, 128, 93, 0.14);
 }
 

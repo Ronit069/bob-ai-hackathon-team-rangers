@@ -72,7 +72,7 @@ export function CommanderScreen() {
                 value={command}
                 onChange={(event) => setCommand(event.target.value)}
                 placeholder='e.g. "Investigate the Mumbai port disruption and prioritize cold-chain shipments."'
-                style={{ flex: 1, background: "rgba(255,255,255,0.85)", fontSize: 14, height: 38 }}
+                style={{ flex: 1, fontSize: 14, height: 38 }}
                 disabled={busy}
               />
               <button
