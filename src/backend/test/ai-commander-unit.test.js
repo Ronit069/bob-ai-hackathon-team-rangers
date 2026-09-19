@@ -20,7 +20,7 @@ import {
   runOperation,
 } from "../src/ai/commander.tools.js";
 import { buildDeterministicCommandExplanation } from "../src/ai/commander.explanation.js";
-import { validateBriefGrounding } from "../src/ai/grounding.js";
+import { validateBriefGrounding, validateGroundedText } from "../src/ai/grounding.js";
 
 const DISRUPTIONS = [
   { id: "D01", type: "port_strike", region_code: "IN-WEST-COAST", severity: 4, status: "active", description: "Dock workers strike at Mumbai port; berth operations suspended." },
@@ -83,6 +83,18 @@ test("command intent parser extracts a JSON object from model chatter", () => {
   );
   assert.equal(parsed.ok, true);
   assert.equal(parsed.data.intent, "GET_RISK");
+});
+
+test("command intent parser tolerates null/omitted requested_operations (planning is server-side)", () => {
+  const parsed = parseCommandIntent(
+    '{"intent":"INVESTIGATE_INCIDENT","incident_id":"D01","incident_text":null,"shipment_id":null,"priority":"COLD_CHAIN","requested_operations":null}',
+  );
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.data.intent, "INVESTIGATE_INCIDENT");
+  assert.equal(parsed.data.requested_operations, null);
+
+  const omitted = parseCommandIntent('{"intent":"GET_AFFECTED_ENTITIES","incident_id":"D01"}');
+  assert.equal(omitted.ok, true);
 });
 
 // ---------------------------------------------------------------------------
@@ -265,4 +277,26 @@ test("recommendation-family check can be disabled when no deterministic action e
   const evidence = { ...EVIDENCE, coldchain: null };
   const explanation = buildDeterministicCommandExplanation(evidence);
   assert.equal(validateBriefGrounding(explanation, evidence, { checkRecommendation: false }).ok, true);
+});
+
+test("negated category words are allowed while positive unsupported claims are flagged", () => {
+  const evidence = { incident_summary: { affected_count: 0, critical_count: 0 } };
+  assert.equal(validateGroundedText("No critical shipments are recorded.", evidence).ok, true);
+  assert.equal(validateGroundedText("0 with critical impact status.", evidence).ok, true);
+
+  const positive = validateGroundedText("The shipment is critical.", evidence);
+  assert.equal(positive.ok, false);
+  assert.ok(positive.violations.includes("category_mismatch:critical"));
+});
+
+test("timestamps in common forms are not treated as numeric claims", () => {
+  const evidence = { generated_at: "2026-09-14T09:00:00.140Z" };
+  assert.equal(validateGroundedText("Updated at 2026-09-14T09:00:00.140Z.", evidence).ok, true);
+  assert.equal(validateGroundedText("Updated at 2026-09-14 09:00:00.140.", evidence).ok, true);
+  assert.equal(validateGroundedText("Updated at 09:00:00.140.", evidence).ok, true);
+  assert.equal(validateGroundedText("Deadline 2026-09-18T09:00:00+05:30.", evidence).ok, true);
+
+  const numeric = validateGroundedText("The score is 140.", evidence);
+  assert.equal(numeric.ok, false);
+  assert.ok(numeric.violations.includes("unsupported_number:140"));
 });

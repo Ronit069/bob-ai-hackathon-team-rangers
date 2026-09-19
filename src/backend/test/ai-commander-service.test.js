@@ -379,11 +379,13 @@ test("a schema-valid but unnecessary proposal operation never creates a proposal
       }
       return {
         text: JSON.stringify({
-          summary: "Grounded summary from the supplied evidence.",
-          whyItMatters: "Evidence only.",
-          evidenceUsed: ["affected_count=3"],
-          recommendedNextStep: "Review and consider intervention",
-          limitations: [],
+          final: {
+            summary: "Grounded summary from the supplied evidence.",
+            whyItMatters: "Evidence only.",
+            evidenceUsed: ["affected_count=3"],
+            recommendedNextStep: "Review and consider intervention",
+            limitations: [],
+          },
         }),
       };
     },
@@ -404,6 +406,206 @@ test("a schema-valid but unnecessary proposal operation never creates a proposal
   assert.equal(proposalCalls.length, 0);
   assert.equal(result.proposal, null);
   assert.equal(result.grounding.ok, true);
+});
+
+test("the LLM's own tool selection is executed before deterministic completion", async () => {
+  const toolCaller = makeToolCaller();
+  let call = 0;
+  const provider = {
+    name: "stub",
+    available: true,
+    async generate() {
+      call += 1;
+      if (call === 1) {
+        return {
+          text: JSON.stringify({
+            intent: "INVESTIGATE_INCIDENT",
+            incident_id: null,
+            incident_text: "Mumbai port",
+            shipment_id: null,
+            priority: "COLD_CHAIN",
+            requested_operations: ["GET_ACTIVE_DISRUPTIONS", "GET_AUDIT_LOG"],
+          }),
+        };
+      }
+      if (call === 2) {
+        return { text: JSON.stringify({ tool: "get_audit_log", input: {} }) };
+      }
+      return {
+        text: JSON.stringify({
+          final: {
+            summary: "Investigation complete.",
+            whyItMatters: "Evidence only.",
+            evidenceUsed: ["affected_count=3"],
+            recommendedNextStep: "Review and consider intervention",
+            limitations: [],
+          },
+        }),
+      };
+    },
+  };
+
+  const result = await runCommand({
+    command: "Investigate the Mumbai port disruption and prioritize cold-chain shipments.",
+    toolCaller,
+    provider,
+  });
+
+  assert.equal(result.intent_source, "ai");
+  assert.equal(result.status, COMMAND_STATUS.VALIDATED_AI);
+  assert.equal(toolCaller.calls[0].tool, "get_audit_log", "the LLM's chosen tool must run first");
+  assert.ok(result.tool_activity.some((entry) => entry.tool === "get_audit_log"));
+  assert.ok(
+    result.tool_activity.some((entry) => entry.tool === "get_affected_shipments"),
+    "deterministic completion must fill essential reads",
+  );
+  assert.equal(result.grounding.ok, true);
+});
+
+test("an ungrounded LLM final is rejected in favour of the deterministic explanation", async () => {
+  const toolCaller = makeToolCaller();
+  let call = 0;
+  const provider = {
+    name: "stub",
+    available: true,
+    async generate() {
+      call += 1;
+      if (call === 1) {
+        return {
+          text: JSON.stringify({
+            intent: "INVESTIGATE_INCIDENT",
+            incident_id: "D01",
+            incident_text: null,
+            shipment_id: null,
+            priority: null,
+            requested_operations: ["GET_AFFECTED_SHIPMENTS"],
+          }),
+        };
+      }
+      return {
+        text: JSON.stringify({
+          final: {
+            summary: "Shipment S999 has a combined risk score of 0.95.",
+            whyItMatters: "Fabricated.",
+            evidenceUsed: ["combined_score=0.95"],
+            recommendedNextStep: "Review and consider intervention",
+            limitations: [],
+          },
+        }),
+      };
+    },
+  };
+
+  const result = await runCommand({
+    command: "Investigate the Mumbai port disruption.",
+    toolCaller,
+    provider,
+  });
+
+  assert.equal(result.status, COMMAND_STATUS.GROUNDING_FAILED);
+  assert.equal(result.grounding.ok, false);
+  assert.ok(result.grounding.violations.some((entry) => entry.startsWith("unknown_id:S999")));
+  assert.match(result.explanation.summary, /I investigated incident D01/);
+});
+
+test("a single grounded repair pass can fix an ungrounded LLM brief", async () => {
+  const toolCaller = makeToolCaller();
+  let call = 0;
+  const provider = {
+    name: "stub",
+    available: true,
+    async generate() {
+      call += 1;
+      if (call === 1) {
+        return {
+          text: JSON.stringify({
+            intent: "INVESTIGATE_INCIDENT",
+            incident_id: "D01",
+            incident_text: null,
+            shipment_id: null,
+            priority: "COLD_CHAIN",
+            requested_operations: null,
+          }),
+        };
+      }
+      if (call === 2) {
+        return {
+          text: JSON.stringify({
+            final: {
+              summary: "Shipment S999 is critical.",
+              whyItMatters: "Fabricated.",
+              evidenceUsed: ["impact_status=critical"],
+              recommendedNextStep: "Monitor",
+              limitations: [],
+            },
+          }),
+        };
+      }
+      return {
+        text: JSON.stringify({
+          summary: "I investigated incident D01.",
+          whyItMatters: "The deterministic recommended action applies.",
+          evidenceUsed: ["incident=D01"],
+          recommendedNextStep: "Review and consider intervention",
+          limitations: [],
+        }),
+      };
+    },
+  };
+
+  const result = await runCommand({
+    command: "Investigate the Mumbai port disruption and prioritize cold-chain shipments.",
+    toolCaller,
+    provider,
+  });
+
+  assert.equal(result.status, COMMAND_STATUS.VALIDATED_AI);
+  assert.equal(result.grounding.ok, true);
+  assert.equal(result.explanation.summary, "I investigated incident D01.");
+  assert.equal(call, 3, "one intent call, one rejected final, one repair call");
+});
+
+test("a failed agent protocol still yields an LLM brief via single-shot recovery", async () => {
+  const toolCaller = makeToolCaller();
+  const provider = {
+    name: "stub",
+    available: true,
+    async generate({ prompt }) {
+      if (prompt.includes("available_tools")) return { text: "not a valid step" };
+      if (prompt.includes("operator_command")) {
+        return {
+          text: JSON.stringify({
+            summary: "I investigated incident D01.",
+            whyItMatters: "The deterministic recommended action applies.",
+            evidenceUsed: ["incident=D01"],
+            recommendedNextStep: "Review and consider intervention",
+            limitations: [],
+          }),
+        };
+      }
+      return {
+        text: JSON.stringify({
+          intent: "INVESTIGATE_INCIDENT",
+          incident_id: "D01",
+          incident_text: null,
+          shipment_id: null,
+          priority: null,
+          requested_operations: null,
+        }),
+      };
+    },
+  };
+
+  const result = await runCommand({
+    command: "Investigate the Mumbai port disruption.",
+    toolCaller,
+    provider,
+  });
+
+  assert.equal(result.status, COMMAND_STATUS.VALIDATED_AI);
+  assert.equal(result.grounding.ok, true);
+  assert.equal(result.explanation.summary, "I investigated incident D01.");
+  assert.equal(result.fallback_reason, "agent_step_limit");
 });
 
 // ---------------------------------------------------------------------------

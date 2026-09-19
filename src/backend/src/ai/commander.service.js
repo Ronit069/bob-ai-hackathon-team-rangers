@@ -7,16 +7,25 @@
 import { config } from "../common/config.js";
 import { callTool } from "../../../mcp-server/src/tools.js";
 import * as logisticsRepo from "../logistics/repository.js";
-import { parseAiBrief } from "./brief.schema.js";
-import { validateBriefGrounding } from "./grounding.js";
+import { aiBriefSchema, extractJsonObject } from "./brief.schema.js";
+import { collectEvidenceCategories, validateBriefGrounding } from "./grounding.js";
 import { ProviderError } from "./provider.js";
 import { parseCommandIntent } from "./commander.schema.js";
 import { matchDisruptionsByText, parseDeterministicIntent, selectPriorityShipment } from "./commander.intent.js";
-import { PHASE_ONE_OPERATIONS, isAllowedOperation, planForIntent, runOperation } from "./commander.tools.js";
+import {
+  ACTIVITY_LABEL,
+  OPERATION_TOOL,
+  PHASE_ONE_OPERATIONS,
+  isAllowedOperation,
+  planForIntent,
+  runOperation,
+} from "./commander.tools.js";
+import { runToolAgent } from "./toolAgent.js";
 import { buildCommandEvidence, normalizeAffected } from "./commander.evidence.js";
 import { buildDeterministicCommandExplanation } from "./commander.explanation.js";
 import {
   INCIDENT_COMMAND_SYSTEM_PROMPT,
+  INCIDENT_COMMANDER_AGENT_SYSTEM_PROMPT,
   INCIDENT_EXPLANATION_SYSTEM_PROMPT,
 } from "./commander.prompt.js";
 
@@ -199,6 +208,63 @@ async function prepareProposal({ intent, results, baseUrl, proposalClient, comma
   return { ok: false, status: "failed", reason: result.error?.code ?? "proposal_failed" };
 }
 
+// Single-shot recovery: when the multi-turn agent protocol fails, one plain "write the
+// brief from this evidence" call is much easier for small models. Same schema + grounding.
+async function writeBriefSingleShot({ provider, evidence, command, log }) {
+  try {
+    const output = await provider.generate({
+      system: INCIDENT_EXPLANATION_SYSTEM_PROMPT,
+      prompt: JSON.stringify({
+        operator_command: command,
+        instruction: "Write the grounded incident brief using only this evidence. Quote values exactly.",
+        evidence,
+      }),
+    });
+    const extracted = extractJsonObject(output?.text, { maxChars: 8000 });
+    if (!extracted.ok) return null;
+    const candidate = extracted.data?.final ?? extracted.data;
+    const parsed = aiBriefSchema.safeParse(candidate);
+    return parsed.success ? parsed.data : null;
+  } catch (error) {
+    if (error instanceof ProviderError) {
+      log("Agent single_shot_failed", { reason: error.reason });
+      return null;
+    }
+    throw error;
+  }
+}
+
+// One bounded grounded self-correction: the model rewrites its final brief using the
+// exact violations and the allowed category vocabulary. Returns null when it fails.
+async function repairBriefWithProvider({ provider, evidence, previous, violations, log }) {
+  try {
+    const prompt = JSON.stringify({
+      instruction:
+        "Rewrite the incident brief so that every identifier, number and category word appears in the evidence. " +
+        "Only use category words from allowed_categories. " +
+        "When allowed_recommended_action is not null, recommendedNextStep must be exactly that string. " +
+        "Keep the required keys exactly.",
+      violations,
+      allowed_categories: [...collectEvidenceCategories(evidence)],
+      allowed_recommended_action: evidence.coldchain?.recommended_action ?? null,
+      previous_final: previous,
+      evidence,
+    });
+    const output = await provider.generate({ system: INCIDENT_EXPLANATION_SYSTEM_PROMPT, prompt });
+    const extracted = extractJsonObject(output?.text, { maxChars: 8000 });
+    if (!extracted.ok) return null;
+    const candidate = extracted.data?.final ?? extracted.data;
+    const parsed = aiBriefSchema.safeParse(candidate);
+    return parsed.success ? parsed.data : null;
+  } catch (error) {
+    if (error instanceof ProviderError) {
+      log("Agent repair_failed", { reason: error.reason });
+      return null;
+    }
+    throw error;
+  }
+}
+
 export async function runIncidentCommand({
   db,
   command,
@@ -283,8 +349,9 @@ export async function runIncidentCommand({
     fallbackReason = provider?.reason ?? "provider_not_configured";
   }
 
-  // Defense in depth: every requested and planned operation must be allowlisted.
-  if (intent && (intent.requested_operations.some((operation) => !isAllowedOperation(operation)))) {
+  // Defense in depth: requested operations must be allowlisted (execution planning is
+  // always server-side, so a missing/null list is harmless and normalized below).
+  if (intent && (intent.requested_operations ?? []).some((operation) => !isAllowedOperation(operation))) {
     fallbackReason = "operation_not_allowed";
     intent = null;
   }
@@ -309,6 +376,16 @@ export async function runIncidentCommand({
         providerName: provider?.name ?? null,
       });
     }
+  }
+
+  if (!intent.requested_operations || intent.requested_operations.length === 0) {
+    intent = {
+      ...intent,
+      requested_operations: planForIntent(intent.intent, {
+        shipmentId: intent.shipment_id,
+        disruptionId: intent.incident_id,
+      }),
+    };
   }
   log("Intent parsed", { source: intentSource, intent: intent.intent, priority: intent.priority ?? "-" });
   log("Intent validated", { intent: intent.intent, operations: intent.requested_operations });
@@ -401,18 +478,99 @@ export async function runIncidentCommand({
     });
   }
 
-  // --- Controlled MCP execution (fixed server-side plan) -----------------------
+  // --- LLM tool agent + deterministic evidence completion ----------------------
+  // When a provider is configured, the model chooses which frozen read-only tools
+  // to call (validated server-side). Deterministic completion then fills any
+  // essential read the agent skipped, so the grounded brief always has full data.
   const activity = [];
   const missing = [];
   const results = {};
 
+  function recordOperation(operation, result) {
+    results[operation] = result;
+    if (result?.ok === false && !result.skipped) missing.push(operation);
+  }
+
   async function run(operation, context) {
     log("Tool selected", { operation });
     const result = await runOperation({ operation, context, baseUrl, toolCaller, activity });
-    results[operation] = result;
-    if (result?.ok === false && !result.skipped) missing.push(operation);
+    recordOperation(operation, result);
     log("Tool completed", { operation, ok: result?.ok !== false });
     return result;
+  }
+
+  function operationForTool(toolName) {
+    return Object.entries(OPERATION_TOOL).find(([, tool]) => tool === toolName)?.[0] ?? toolName;
+  }
+
+  const providerUsable = provider && provider.available !== false;
+  let agentResult = null;
+
+  if (providerUsable) {
+    agentResult = await runToolAgent({
+      system: INCIDENT_COMMANDER_AGENT_SYSTEM_PROMPT,
+      task: JSON.stringify({
+        operator_command: command,
+        validated_intent: intent.intent,
+        priority: intent.priority ?? null,
+        resolved_incident: incident
+          ? {
+              disruption_id: incident.id,
+              type: incident.type,
+              region_code: incident.region_code,
+              severity: incident.severity,
+              status: incident.status,
+              description: incident.description,
+            }
+          : null,
+        resolved_shipment: shipmentRow
+          ? {
+              shipment_id: shipmentRow.id,
+              cargo_type: shipmentRow.cargo_type,
+              is_cold_chain: Boolean(shipmentRow.is_cold_chain),
+              status: shipmentRow.status,
+            }
+          : null,
+        required_output: {
+          summary: "string",
+          whyItMatters: "string",
+          evidenceUsed: "string[]",
+          recommendedNextStep: "string",
+          limitations: "string[]",
+        },
+      }),
+      provider,
+      baseUrl,
+      toolCaller,
+      maxToolCalls: config.aiAgentMaxToolCalls,
+      maxPromptChars: config.aiAgentMaxPromptChars,
+      validateFinal: (final) =>
+        aiBriefSchema.safeParse(final).success
+          ? { ok: true }
+          : { ok: false, reason: "final must match the brief schema exactly" },
+      onEvent: (event, details) => log(`Agent ${event}`, details),
+    });
+
+    for (const entry of agentResult.evidence ?? []) {
+      const operation = operationForTool(entry.tool);
+      const failed = entry.ok === false;
+      activity.push({
+        operation,
+        tool: entry.tool,
+        input: entry.input,
+        ok: !failed,
+        source: "mcp",
+        message: ACTIVITY_LABEL[operation] ?? "Tool completed",
+      });
+      if (!(operation in results)) {
+        recordOperation(
+          operation,
+          failed
+            ? { tool: entry.tool, ok: false, error: entry.output ?? { code: "TOOL_ERROR" } }
+            : { tool: entry.tool, ok: true, ...(entry.output ?? {}) },
+        );
+      }
+    }
   }
 
   const plan = planForIntent(intent.intent, { shipmentId: intent.shipment_id, disruptionId: incident?.id ?? null });
@@ -420,7 +578,9 @@ export async function runIncidentCommand({
   const phaseTwo = plan.filter((operation) => !PHASE_ONE_OPERATIONS.includes(operation));
   const resolvedContext = { disruptionId: incident?.id ?? null, shipmentId: intent.shipment_id ?? null };
 
-  for (const operation of phaseOne) await run(operation, resolvedContext);
+  for (const operation of phaseOne) {
+    if (!(operation in results)) await run(operation, resolvedContext);
+  }
 
   const affected = normalizeAffected(results.GET_AFFECTED_SHIPMENTS?.data);
   const riskOverview = results.GET_RISK_OVERVIEW?.data ?? [];
@@ -451,7 +611,9 @@ export async function runIncidentCommand({
     disruptionId: incident?.id ?? null,
     shipmentId: priorityShipment?.id ?? intent.shipment_id ?? null,
   };
-  for (const operation of phaseTwo) await run(operation, detailContext);
+  for (const operation of phaseTwo) {
+    if (!(operation in results)) await run(operation, detailContext);
+  }
 
   // Proposal creation: only for the explicit validated CREATE_PROPOSAL intent.
   let proposalResult = null;
@@ -487,7 +649,7 @@ export async function runIncidentCommand({
     proposalResult?.status ?? (intent.intent === "CREATE_PROPOSAL" ? "not_created" : null);
   log("Evidence assembled", { affected: evidence.incident_summary.affected_count, partial: evidence.partial });
 
-  // --- Grounded explanation (reuses the Feature 1 grounding validator) ----------
+  // --- LLM final brief + grounding (reuses the Feature 1 grounding validator) ----
   const fallbackExplanation = buildDeterministicCommandExplanation(evidence);
   const checkRecommendation = Boolean(evidence.coldchain?.recommended_action);
   let status = COMMAND_STATUS.DETERMINISTIC_FALLBACK;
@@ -495,43 +657,111 @@ export async function runIncidentCommand({
   let grounding = null;
   const providerName = provider?.name ?? null;
 
-  if (provider && provider.available !== false) {
-    const prompt = JSON.stringify(evidence);
-    if (prompt.length > maxPromptChars) {
-      status = COMMAND_STATUS.PROVIDER_UNAVAILABLE;
-      fallbackReason = fallbackReason ?? "prompt_too_large";
-    } else {
-      let output = null;
-      let failure = null;
-      try {
-        output = await provider.generate({ system: INCIDENT_EXPLANATION_SYSTEM_PROMPT, prompt });
-      } catch (error) {
-        if (error instanceof ProviderError) failure = error.reason;
-        else throw error;
-      }
+  const agentFinal = agentResult?.ok ? aiBriefSchema.safeParse(agentResult.answer) : null;
+  if (agentFinal?.success) {
+    let candidate = agentFinal.data;
+    grounding = validateBriefGrounding(candidate, evidence, { checkRecommendation });
 
-      if (failure) {
-        status = COMMAND_STATUS.PROVIDER_UNAVAILABLE;
-        fallbackReason = fallbackReason ?? failure;
-      } else {
-        const parsed = parseAiBrief(output?.text, { maxChars: maxResponseChars });
-        if (!parsed.ok) {
-          status = COMMAND_STATUS.INVALID_AI_OUTPUT;
-          fallbackReason = fallbackReason ?? parsed.reason;
-        } else {
-          grounding = validateBriefGrounding(parsed.data, evidence, { checkRecommendation });
-          if (!grounding.ok) {
-            status = COMMAND_STATUS.GROUNDING_FAILED;
-            fallbackReason = fallbackReason ?? "grounding_violations";
-          } else {
-            status = COMMAND_STATUS.VALIDATED_AI;
-            explanation = parsed.data;
-          }
-        }
+    // Authoritative action normalization: copying the deterministic action verbatim is
+    // always safe and fixes action-family conflicts in the model's wording.
+    if (!grounding.ok && evidence.coldchain?.recommended_action) {
+      const normalized = { ...candidate, recommendedNextStep: evidence.coldchain.recommended_action };
+      const normalizedGrounding = validateBriefGrounding(normalized, evidence, { checkRecommendation });
+      if (normalizedGrounding.ok) {
+        candidate = normalized;
+        grounding = normalizedGrounding;
+        log("Agent action_normalized", {});
       }
     }
+
+    // One bounded repair attempt with the exact violations before falling back.
+    if (!grounding.ok) {
+      const repaired = await repairBriefWithProvider({
+        provider,
+        evidence,
+        previous: candidate,
+        violations: grounding.violations,
+        log,
+      });
+      const repairedGrounding = repaired
+        ? validateBriefGrounding(repaired, evidence, { checkRecommendation })
+        : null;
+      if (repaired && repairedGrounding.ok) {
+        candidate = repaired;
+        grounding = repairedGrounding;
+        log("Agent repair_completed", {});
+      } else if (repairedGrounding) {
+        grounding = repairedGrounding;
+      }
+    }
+
+    // Final recovery: one single-shot grounded brief from the assembled evidence.
+    if (!grounding.ok) {
+      const singleShot = await writeBriefSingleShot({ provider, evidence, command, log });
+      const singleGrounding = singleShot
+        ? validateBriefGrounding(singleShot, evidence, { checkRecommendation })
+        : null;
+      if (singleShot && singleGrounding.ok) {
+        candidate = singleShot;
+        grounding = singleGrounding;
+        fallbackReason = fallbackReason ?? "grounding_repair";
+        log("Agent single_shot_completed", {});
+      } else if (singleGrounding) {
+        grounding = singleGrounding;
+      }
+    }
+
+    if (grounding.ok) {
+      status = COMMAND_STATUS.VALIDATED_AI;
+      explanation = candidate;
+    } else {
+      status = COMMAND_STATUS.GROUNDING_FAILED;
+      fallbackReason = fallbackReason ?? "grounding_violations";
+      log("Agent brief_rejected", {
+        violations: grounding.violations.slice(0, 3),
+        draft: JSON.stringify(candidate).slice(0, 300),
+      });
+    }
+  } else if (providerUsable) {
+    // Multi-turn agent failed: one single-shot grounded brief from the collected
+    // evidence, plus one repair pass if the wording still conflicts.
+    let recovered = await writeBriefSingleShot({ provider, evidence, command, log });
+    let recoveredGrounding = recovered
+      ? validateBriefGrounding(recovered, evidence, { checkRecommendation })
+      : null;
+    if (recovered && !recoveredGrounding.ok) {
+      const repaired = await repairBriefWithProvider({
+        provider,
+        evidence,
+        previous: recovered,
+        violations: recoveredGrounding.violations,
+        log,
+      });
+      const repairedGrounding = repaired
+        ? validateBriefGrounding(repaired, evidence, { checkRecommendation })
+        : null;
+      if (repaired && repairedGrounding.ok) {
+        recovered = repaired;
+        recoveredGrounding = repairedGrounding;
+      }
+    }
+
+    if (recovered && recoveredGrounding.ok) {
+      status = COMMAND_STATUS.VALIDATED_AI;
+      explanation = recovered;
+      grounding = recoveredGrounding;
+      fallbackReason = fallbackReason ?? agentResult?.reason ?? agentResult?.status ?? "agent_recovery";
+      log("Agent single_shot_completed", {});
+    } else {
+      const providerFailure = agentResult?.status === "PROVIDER_ERROR" && !recovered;
+      status = providerFailure ? COMMAND_STATUS.PROVIDER_UNAVAILABLE : COMMAND_STATUS.INVALID_AI_OUTPUT;
+      fallbackReason = fallbackReason ?? agentResult?.reason ?? "invalid_ai_output";
+    }
   }
-  log("Explanation generated", { status, source: status === COMMAND_STATUS.VALIDATED_AI ? "ai" : "deterministic" });
+  log("Explanation generated", {
+    status,
+    source: status === COMMAND_STATUS.VALIDATED_AI ? "ai" : "deterministic",
+  });
 
   return {
     command,

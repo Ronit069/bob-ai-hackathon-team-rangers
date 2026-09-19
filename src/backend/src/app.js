@@ -35,7 +35,7 @@ export function createApp({ db = getPool(), aiProvider = null } = {}) {
   app.use("/api", createColdchainRouter(db));
   app.use("/api", createRiskRouter(db));
   app.use("/api", createAuditRouter(db));
-  app.use("/api", createBobRouter());
+  app.use("/api", createBobRouter({ provider: aiProvider }));
   app.use("/api", createAiRouter(db, { provider: aiProvider }));
 
   // Unknown /api paths -> standard 404 envelope (Phase 6 / F8).

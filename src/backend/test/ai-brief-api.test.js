@@ -1,7 +1,7 @@
 import test, { after, before } from "node:test";
 import assert from "node:assert/strict";
 import { config } from "../src/common/config.js";
-import { setupTestDb, seedTestDatabase } from "../src/test-support/helpers.js";
+import { setupTestDb, seedTestDatabase, loadSeedJson } from "../src/test-support/helpers.js";
 import { startTestServer, api } from "../src/test-support/api.js";
 import { buildIncidentEvidence } from "../src/ai/evidence.js";
 import { buildDeterministicBrief } from "../src/ai/fallback.js";
@@ -10,7 +10,8 @@ import { aiBriefSchema } from "../src/ai/brief.schema.js";
 import { BRIEF_STATUS, generateIncidentBrief } from "../src/ai/service.js";
 import { ProviderError } from "../src/ai/provider.js";
 
-const ANCHOR = new Date("2026-09-14T09:00:00Z");
+// Fixture-relative anchor (regenerated fixtures move over time; the scenarios are fixed).
+let ANCHOR;
 
 const stub = {
   name: "stub",
@@ -42,6 +43,7 @@ let baseUrl;
 before(async () => {
   pool = await setupTestDb();
   await seedTestDatabase(pool);
+  ANCHOR = new Date(loadSeedJson().groundTruth.meta.now);
   server = await startTestServer(pool, { aiProvider: stub });
   baseUrl = server.baseUrl;
 });

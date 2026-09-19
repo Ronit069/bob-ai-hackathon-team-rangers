@@ -121,11 +121,13 @@ The frontend communicates with the backend exclusively through the Vite dev prox
 ```
 1. Operator sends question (POST /api/bob/query)
 2. Backend forwards to the configured Bob/MCP gateway with grounding rules + bearer auth;
-   without BOB_API_URL the credential-free local grounded engine runs instead
-3. Bob calls MCP tools over stdio (gateway) or in-process `callTool` (local engine)
+   without BOB_API_URL the local LLM grounded tool agent runs (watsonx/Gemini/Groq),
+   with the credential-free deterministic engine as fallback
+3. The LLM chooses read-only MCP tools; the server validates tool names/inputs and
+   executes them through `callTool` (max AI_AGENT_MAX_TOOL_CALLS)
 4. Each tool calls one backend REST endpoint (GET only)
-5. Bob synthesises answer from tool JSON only
-6. Response contains answer + evidence (tool name, input, raw JSON)
+5. The model answers from tool JSON only; grounding checks IDs/numbers/categories
+6. Response contains answer + evidence (tool name, input, raw JSON) + status/source
 7. Frontend displays answer alongside evidence panel
 ```
 
@@ -133,10 +135,12 @@ The frontend communicates with the backend exclusively through the Vite dev prox
 
 ```
 1. Operator sends a command (POST /api/ai/incident-command)
-2. Validated intent (existing AI provider, deterministic fallback) selects a fixed server-side plan
-3. The plan runs frozen read-only MCP tools through `callTool`
-4. ChainSentinel deterministic services produce the results
-5. Command evidence is assembled and grounded by the Feature 1 validator
+2. Validated intent (LLM, deterministic fallback) + deterministic incident resolution
+3. The LLM investigates with the frozen read-only MCP tools through `callTool`;
+   deterministic completion fills any essential read the model skipped
+4. ChainSentinel deterministic services produce the authoritative values
+5. Command evidence is assembled and the LLM final brief is grounded by the
+   Feature 1 validator (with one bounded repair pass, then deterministic fallback)
 6. Explanation returned with tool activity + evidence; CREATE_PROPOSAL creates a
    pending recommendation via POST /api/recommendations and stops at human approval
 ```

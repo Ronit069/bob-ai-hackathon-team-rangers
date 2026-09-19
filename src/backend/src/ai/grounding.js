@@ -1,6 +1,9 @@
 const ID_PATTERN = /\b(?:S\d{3}|D\d{2}|EX-\d{4}|REC-\d{4}|A\d{3}|C\d{2}|R\d{3})\b/g;
 const NUMBER_PATTERN = /-?\d+(?:\.\d+)?%?/g;
-const ISO_PATTERN = /\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z)?/g;
+// Timestamps are quoted evidence, not numeric claims: accept ISO forms with T or space,
+// with/without seconds, fractional seconds, Z or a numeric offset, and bare clock times.
+const ISO_PATTERN = /\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d{1,6})?)?(?:Z|[+-]\d{2}:?\d{2})?)?/g;
+const TIME_PATTERN = /\b\d{1,2}:\d{2}(?::\d{2}(?:\.\d{1,6})?)?\b/g;
 const CATEGORY_PATTERN = /\b(critical|blocked|delayed|warning|major|normal|unaffected|at[_ ]risk|unknown[_ ]review)\b/gi;
 
 const ACTION_FAMILIES = [
@@ -8,6 +11,10 @@ const ACTION_FAMILIES = [
   { family: "review", pattern: /review|investigate|inspect|assess/i },
   { family: "intervene", pattern: /interven|immediate action|act immediately|reroute|re-route|redeploy|reassign|escalat/i },
 ];
+
+// A category word in a negation ("no critical shipments", "0 with critical impact") is an
+// absence statement, not an unsupported claim. Positive uses are still flagged.
+const NEGATED_CATEGORY_PREFIX = /\b(no|not|none|never|without|zero|0)\b[\s\w-]{0,24}$/i;
 
 function walk(value, visit) {
   if (Array.isArray(value)) {
@@ -76,24 +83,15 @@ export function actionFamilies(text) {
   return families;
 }
 
-// checkRecommendation: Feature 1 always enforces action-family consistency with the
-// deterministic cold-chain action. The Commander passes false only when its evidence
-// contains no deterministic recommended_action (e.g. an incident with no shipments).
-export function validateBriefGrounding(brief, evidence, { checkRecommendation = true } = {}) {
-  const text = [
-    brief.summary,
-    brief.whyItMatters,
-    brief.recommendedNextStep,
-    ...(brief.evidenceUsed ?? []),
-    ...(brief.limitations ?? []),
-  ].join("\n");
-
+// Shared text checks: identifiers, numbers and category words must appear in the evidence.
+// Reused by the brief validator and by free-text agent answers (Bob Chat).
+function collectTextViolations(text, evidence) {
   const violations = [];
   const allowedIds = collectEvidenceIds(evidence);
   const allowedNumbers = collectEvidenceNumbers(evidence);
   const allowedCategories = collectEvidenceCategories(evidence);
 
-  const withoutDates = text.replace(ISO_PATTERN, " ");
+  const withoutDates = text.replace(ISO_PATTERN, " ").replace(TIME_PATTERN, " ");
 
   for (const match of withoutDates.matchAll(ID_PATTERN)) {
     if (!allowedIds.has(match[0]) && violations.length < 10) {
@@ -112,10 +110,28 @@ export function validateBriefGrounding(brief, evidence, { checkRecommendation = 
 
   for (const match of text.matchAll(CATEGORY_PATTERN)) {
     const term = match[0].toLowerCase().replace(/ /g, "_");
-    if (!allowedCategories.has(term) && violations.length < 10) {
-      violations.push(`category_mismatch:${match[0]}`);
-    }
+    if (allowedCategories.has(term)) continue;
+    const prefix = text.slice(Math.max(0, (match.index ?? 0) - 40), match.index ?? 0);
+    if (NEGATED_CATEGORY_PREFIX.test(prefix)) continue;
+    if (violations.length < 10) violations.push(`category_mismatch:${match[0]}`);
   }
+
+  return violations;
+}
+
+// checkRecommendation: Feature 1 always enforces action-family consistency with the
+// deterministic cold-chain action. The Commander passes false only when its evidence
+// contains no deterministic recommended_action (e.g. an incident with no shipments).
+export function validateBriefGrounding(brief, evidence, { checkRecommendation = true } = {}) {
+  const text = [
+    brief.summary,
+    brief.whyItMatters,
+    brief.recommendedNextStep,
+    ...(brief.evidenceUsed ?? []),
+    ...(brief.limitations ?? []),
+  ].join("\n");
+
+  const violations = collectTextViolations(text, evidence);
 
   if (checkRecommendation) {
     const deterministicFamilies = actionFamilies(evidence.coldchain?.recommended_action);
@@ -127,5 +143,11 @@ export function validateBriefGrounding(brief, evidence, { checkRecommendation = 
     }
   }
 
+  return { ok: violations.length === 0, violations };
+}
+
+// Free-text grounding for LLM-generated answers (Bob Chat).
+export function validateGroundedText(text, evidence) {
+  const violations = collectTextViolations(String(text ?? ""), evidence);
   return { ok: violations.length === 0, violations };
 }

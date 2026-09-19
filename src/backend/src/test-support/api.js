@@ -4,8 +4,9 @@ import { config } from "../common/config.js";
 
 export async function startTestServer(db, { aiProvider = null } = {}) {
   // Tests must not depend on the developer's local .env: Bob starts from the frozen
-  // contract default (disabled) unless a test explicitly enables it.
+  // contract default (disabled) and no live AI provider is used unless a test injects one.
   config.bobEnabled = false;
+  config.aiProvider = "none";
   const app = createApp({ db, aiProvider });
   const server = app.listen(0);
   await new Promise((resolve) => server.once("listening", resolve));

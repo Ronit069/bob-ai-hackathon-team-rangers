@@ -47,7 +47,9 @@ export const commandIntentSchema = z
     incident_text: z.string().trim().min(1).max(120).nullable().optional(),
     shipment_id: z.string().regex(/^S\d{3}$/, "must match S###").nullable().optional(),
     priority: z.enum(COMMAND_PRIORITIES).nullable().optional(),
-    requested_operations: z.array(z.enum(COMMAND_OPERATIONS)).min(1).max(10),
+    // The model may omit this (or return null): planning is always server-side, so a
+    // missing list is normalized to the fixed plan for the validated intent.
+    requested_operations: z.array(z.enum(COMMAND_OPERATIONS)).max(10).nullable().optional(),
   })
   .strict();
 

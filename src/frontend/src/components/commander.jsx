@@ -26,8 +26,11 @@ export const COMMAND_STATUS_TONE = {
 export const COMMAND_FALLBACK_REASON_LABEL = {
   feature_disabled: "The AI Incident Commander feature flag is disabled on the backend.",
   provider_not_configured: "No AI provider endpoint is configured on the backend.",
-  granite_runtime_pending: "Granite configuration is present; the watsonx runtime adapter is not implemented yet.",
+  invalid_ai_output: "The AI output was invalid and was replaced by the deterministic response.",
+  agent_step_limit: "The AI agent reached its step limit; the deterministic response is shown.",
   provider_timeout: "The AI provider timed out.",
+  provider_rate_limited: "The AI provider is rate-limiting requests; the deterministic response is shown.",
+  provider_quota_exceeded: "The AI provider quota is exhausted; the deterministic response is shown.",
   provider_unreachable: "The AI provider is unreachable.",
   provider_error: "The AI provider returned an error.",
   provider_invalid_response: "The AI provider returned a non-JSON response.",

@@ -1,5 +1,5 @@
-// Granite/watsonx configuration boundary tests (Feature 2 preparation).
-// Pure unit tests: no database, no network, no credentials.
+// AI provider configuration, registry and safety tests (Feature 2 runtime).
+// No network: provider HTTP behavior is covered in ai-providers.test.js.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { config } from "../src/common/config.js";
@@ -28,24 +28,27 @@ test("centralized config exposes the watsonx boundary with safe defaults", () =>
   for (const value of [watsonx.apiKey, watsonx.projectId, watsonx.url]) {
     assert.ok(!value.includes("YOUR_"), "placeholders must be treated as absent");
   }
+  assert.equal(typeof config.aiProvider, "string");
+  assert.equal(typeof config.gemini.apiKey, "string");
+  assert.equal(typeof config.groq.apiKey, "string");
+  assert.equal(typeof config.aiAgentMaxToolCalls, "number");
 });
 
-test("granite runtime status is a non-secret, controlled view", () => {
+test("granite runtime status reflects configuration without secrets", () => {
   const missing = graniteRuntimeStatus({
-    watsonx: { configured: false, modelId: "ibm/granite-3-8b-instruct", missing: ["WATSONX_API_KEY"] },
+    watsonx: { configured: false, modelId: "ibm/granite-4-h-small", missing: ["WATSONX_API_KEY"] },
   });
   assert.equal(missing.configured, false);
   assert.equal(missing.available, false);
   assert.equal(missing.reason, "provider_not_configured");
   assert.deepEqual(missing.missing, ["WATSONX_API_KEY"]);
-  assert.equal(missing.model_id, "ibm/granite-3-8b-instruct");
 
-  const pending = graniteRuntimeStatus({
-    watsonx: { configured: true, modelId: "ibm/granite-3-8b-instruct", missing: [] },
+  const configured = graniteRuntimeStatus({
+    watsonx: { configured: true, modelId: "ibm/granite-4-h-small", missing: [] },
   });
-  assert.equal(pending.configured, true);
-  assert.equal(pending.available, false);
-  assert.equal(pending.reason, "granite_runtime_pending");
+  assert.equal(configured.configured, true);
+  assert.equal(configured.available, true);
+  assert.equal(configured.reason, null);
 
   const leaky = graniteRuntimeStatus({ watsonx: { configured: true, apiKey: FAKE_KEY, missing: [] } });
   assert.ok(!JSON.stringify(leaky).includes(FAKE_KEY), "status must never include the API key");
@@ -54,7 +57,10 @@ test("granite runtime status is a non-secret, controlled view", () => {
 test("missing/placeholder credentials resolve to a controlled disabled provider", async () => {
   const provider = resolveDefaultProvider({
     apiUrl: "",
-    watsonx: { configured: false, missing: ["WATSONX_API_KEY"], apiKey: "" },
+    selection: "auto",
+    watsonx: { configured: false, missing: ["WATSONX_API_KEY"] },
+    gemini: { apiKey: "" },
+    groq: { apiKey: "" },
   });
   assert.equal(provider.name, "none");
   assert.equal(provider.available, false);
@@ -65,32 +71,77 @@ test("missing/placeholder credentials resolve to a controlled disabled provider"
   );
 });
 
-test("configured Granite without a runtime adapter stays disabled and never leaks the key", async () => {
-  const provider = resolveDefaultProvider({
+test("AI_PROVIDER forces the selected provider and reports missing credentials safely", () => {
+  const watsonx = resolveDefaultProvider({
+    selection: "watsonx",
     apiUrl: "",
-    watsonx: { configured: true, apiKey: FAKE_KEY, projectId: "p", url: "https://example.invalid", missing: [] },
+    watsonx: { configured: true, apiKey: "k", projectId: "p", url: "https://example.invalid", modelId: "m" },
   });
-  assert.equal(provider.available, false);
-  assert.equal(provider.reason, "granite_runtime_pending");
-  try {
-    await provider.generate({ system: "s", prompt: "p" });
-    assert.fail("generate must not succeed without the runtime adapter");
-  } catch (error) {
-    assert.equal(error instanceof ProviderError, true);
-    assert.equal(error.reason, "granite_runtime_pending");
-    assert.ok(!error.message.includes(FAKE_KEY));
-    assert.ok(!JSON.stringify(error.details ?? {}).includes(FAKE_KEY));
-  }
+  assert.equal(watsonx.name, "granite_watsonx");
+  assert.equal(watsonx.available, true);
+
+  const gemini = resolveDefaultProvider({
+    selection: "gemini",
+    apiUrl: "",
+    gemini: { apiKey: "k", modelId: "gemini-2.0-flash" },
+    watsonx: { configured: false },
+  });
+  assert.equal(gemini.name, "gemini");
+  assert.equal(gemini.available, true);
+
+  const groq = resolveDefaultProvider({
+    selection: "groq",
+    apiUrl: "",
+    groq: { apiKey: "k", modelId: "llama-3.3-70b-versatile" },
+    watsonx: { configured: false },
+  });
+  assert.equal(groq.name, "groq");
+  assert.equal(groq.available, true);
+
+  const none = resolveDefaultProvider({ selection: "none" });
+  assert.equal(none.name, "none");
+  assert.equal(none.available, false);
+
+  const forcedMissing = resolveDefaultProvider({ selection: "gemini", apiUrl: "", gemini: { apiKey: "" } });
+  assert.equal(forcedMissing.available, false);
+  assert.equal(forcedMissing.reason, "provider_not_configured");
 });
 
-test("explicit Bob gateway configuration keeps Feature 1 backward compatibility", () => {
-  const provider = resolveDefaultProvider({
+test("auto selection prefers the Bob gateway, then watsonx, then gemini, then groq", () => {
+  const gateway = resolveDefaultProvider({
+    selection: "auto",
     apiUrl: "http://gateway.local",
-    apiKey: "unit-bob-key",
-    watsonx: { configured: true, missing: [] },
+    apiKey: "k",
+    watsonx: { configured: true, apiKey: "k", projectId: "p", url: "https://x" },
   });
-  assert.equal(provider.name, "bob_http");
-  assert.equal(provider.available, true);
+  assert.equal(gateway.name, "bob_http");
+
+  const watsonx = resolveDefaultProvider({
+    selection: "auto",
+    apiUrl: "",
+    watsonx: { configured: true, apiKey: "k", projectId: "p", url: "https://x", modelId: "m" },
+    gemini: { apiKey: "g" },
+    groq: { apiKey: "q" },
+  });
+  assert.equal(watsonx.name, "granite_watsonx");
+
+  const gemini = resolveDefaultProvider({
+    selection: "auto",
+    apiUrl: "",
+    watsonx: { configured: false },
+    gemini: { apiKey: "g", modelId: "gemini-2.0-flash" },
+    groq: { apiKey: "q" },
+  });
+  assert.equal(gemini.name, "gemini");
+
+  const groq = resolveDefaultProvider({
+    selection: "auto",
+    apiUrl: "",
+    watsonx: { configured: false },
+    gemini: { apiKey: "" },
+    groq: { apiKey: "q", modelId: "llama-3.3-70b-versatile" },
+  });
+  assert.equal(groq.name, "groq");
 });
 
 test("disabled provider defaults remain backward compatible", async () => {

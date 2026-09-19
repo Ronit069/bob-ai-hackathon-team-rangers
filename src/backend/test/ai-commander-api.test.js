@@ -144,11 +144,13 @@ test("a validated AI intent with a grounded explanation returns VALIDATED_AI", a
     }
     return {
       text: JSON.stringify({
-        summary: "Available fleet assets were retrieved from the fleet service.",
-        whyItMatters: "Only deterministic tool output is reported.",
-        evidenceUsed: ["command evidence"],
-        recommendedNextStep: "No action has been taken.",
-        limitations: ["No operational action has been executed."],
+        final: {
+          summary: "Available fleet assets were retrieved from the fleet service.",
+          whyItMatters: "Only deterministic tool output is reported.",
+          evidenceUsed: ["command evidence"],
+          recommendedNextStep: "No action has been taken.",
+          limitations: ["No operational action has been executed."],
+        },
       }),
     };
   };

@@ -1,13 +1,11 @@
 import { config } from "../common/config.js";
+import { ProviderError } from "./providerError.js";
+import { createGeminiProvider } from "./providers/gemini.js";
+import { createGroqProvider } from "./providers/groq.js";
+import { createWatsonxProvider } from "./providers/watsonx.js";
 
-export class ProviderError extends Error {
-  constructor(reason, message, details = {}) {
-    super(message);
-    this.name = "ProviderError";
-    this.reason = reason;
-    this.details = details;
-  }
-}
+// Re-exported so existing imports (`./provider.js`) keep working.
+export { ProviderError } from "./providerError.js";
 
 export function createDisabledProvider(
   reason = "provider_not_configured",
@@ -27,35 +25,72 @@ export function createDisabledProvider(
 // Never returns the API key or any other credential.
 export function graniteRuntimeStatus({ watsonx = config.watsonx } = {}) {
   const missing = [...(watsonx?.missing ?? [])];
+  const configured = Boolean(watsonx?.configured);
   return {
     provider: "granite_watsonx",
-    model_id: watsonx?.modelId ?? "ibm/granite-3-8b-instruct",
-    configured: Boolean(watsonx?.configured),
-    // The watsonx runtime adapter is deliberately not implemented yet; configuration
-    // is wired and validated, but no Granite request is ever attempted.
-    available: false,
-    reason: watsonx?.configured ? "granite_runtime_pending" : "provider_not_configured",
+    model_id: watsonx?.modelId ?? "ibm/granite-4-h-small",
+    configured,
+    available: configured,
+    reason: configured ? null : "provider_not_configured",
     missing,
   };
 }
 
-// Default provider selection for the existing AI infrastructure.
-// Precedence (backward compatible with Feature 1):
-//   1. BOB_API_URL gateway (current working path)
-//   2. Granite configured but runtime pending -> controlled unavailable provider
-//   3. nothing configured -> controlled unavailable provider
+// Default provider selection for the AI infrastructure (Bob Chat + Incident Commander).
+// `AI_PROVIDER=auto` (default) keeps Feature 1 backward compatibility: an explicitly
+// configured BOB_API_URL gateway wins, then Granite/watsonx, then Gemini, then Groq.
+// `AI_PROVIDER=watsonx|gemini|groq|bob_gateway|none` forces a specific choice.
 export function resolveDefaultProvider({
   apiUrl = config.bobApiUrl,
   apiKey = config.bobApiKey,
   watsonx = config.watsonx,
+  gemini = config.gemini,
+  groq = config.groq,
+  selection = config.aiProvider,
+  fetchImpl = fetch,
 } = {}) {
-  if (apiUrl) return createHttpProvider({ apiUrl, apiKey });
-  if (watsonx?.configured) {
-    return createDisabledProvider(
-      "granite_runtime_pending",
-      "Granite configuration is present but the watsonx runtime adapter is not implemented yet",
-    );
+  const explicit = String(selection ?? "auto").trim().toLowerCase();
+
+  const watsonxProvider = () =>
+    watsonx?.configured
+      ? createWatsonxProvider({
+          apiKey: watsonx.apiKey,
+          projectId: watsonx.projectId,
+          url: watsonx.url,
+          modelId: watsonx.modelId,
+          fetchImpl,
+        })
+      : createDisabledProvider("provider_not_configured", "Granite/watsonx configuration is incomplete");
+
+  const geminiProvider = () =>
+    gemini?.apiKey
+      ? createGeminiProvider({ apiKey: gemini.apiKey, modelId: gemini.modelId, fetchImpl })
+      : createDisabledProvider("provider_not_configured", "GEMINI_API_KEY is not configured");
+
+  const groqProvider = () =>
+    groq?.apiKey
+      ? createGroqProvider({ apiKey: groq.apiKey, modelId: groq.modelId, fetchImpl })
+      : createDisabledProvider("provider_not_configured", "GROQ_API_KEY is not configured");
+
+  if (explicit === "none") {
+    return createDisabledProvider("provider_not_configured", "AI providers are disabled (AI_PROVIDER=none)");
   }
+  if (explicit === "watsonx") return watsonxProvider();
+  if (explicit === "gemini") return geminiProvider();
+  if (explicit === "groq") return groqProvider();
+  if (explicit === "bob_gateway") {
+    return apiUrl
+      ? createHttpProvider({ apiUrl, apiKey, fetchImpl })
+      : createDisabledProvider("provider_not_configured", "BOB_API_URL is not configured");
+  }
+  if (explicit !== "auto") {
+    return createDisabledProvider("provider_not_configured", `Unknown AI_PROVIDER "${explicit}"`);
+  }
+
+  if (apiUrl) return createHttpProvider({ apiUrl, apiKey, fetchImpl });
+  if (watsonx?.configured) return watsonxProvider();
+  if (gemini?.apiKey) return geminiProvider();
+  if (groq?.apiKey) return groqProvider();
   return createDisabledProvider();
 }
 

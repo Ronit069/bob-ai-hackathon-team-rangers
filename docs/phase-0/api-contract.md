@@ -520,5 +520,13 @@ The MCP tool catalogue and schemas in §5 are unchanged. Transport is **stdio**,
 - **Response:** `status`, `intent` (validated), `intent_source`, `fallback_reason`, `provider_name`, `clarification`, `grounding`, `explanation`, `evidence`, `tool_activity`, `proposal`, `proposal_status`, `partial`, `missing_tools`, `generated_at`.
 - **Statuses:** `FEATURE_DISABLED` · `CLARIFICATION_REQUIRED` · `VALIDATED_AI` · `DETERMINISTIC_FALLBACK` · `PROVIDER_UNAVAILABLE` · `INVALID_AI_OUTPUT` · `GROUNDING_FAILED`.
 - **Flag:** `FEATURE_AI_INCIDENT_COMMANDER` (default `false`). While disabled: no AI request and no MCP orchestration; the deterministic dashboard is unaffected.
-- **Rules:** the executed tool plan is fixed server-side and uses only the 11 frozen read-only MCP tools; model output is schema-validated and never selects tools. Mutating/decision endpoints are never called. `CREATE_PROPOSAL` uses `POST /api/recommendations` (existing validation, duplicate guard and audit) and stops at `pending` human approval.
-- **Grounding:** reuses the Feature 1 validator (`src/backend/src/ai/grounding.js`); ungrounded AI text is discarded in favour of the deterministic explanation.
+- **Rules:** with an AI provider configured, the model chooses which of the 11 frozen read-only MCP tools to call; the server validates every tool name/input through the frozen schemas and executes only via `callTool` (capped by `AI_AGENT_MAX_TOOL_CALLS`). Deterministic completion fills essential reads, and mutating/decision endpoints are never called. `CREATE_PROPOSAL` uses `POST /api/recommendations` (existing validation, duplicate guard and audit) and stops at `pending` human approval. Without a provider the deterministic intent parser, fixed plan and deterministic brief run instead.
+- **Grounding:** reuses the Feature 1 validator; the LLM brief is checked against the command evidence (unknown IDs, unsupported numbers, unsupported category words, recommendation-family conflicts), gets one bounded repair pass, and is replaced by the deterministic explanation if it still conflicts.
+
+### 9.3 `POST /api/bob/query` — additive LLM fields
+
+The frozen response (`answer`, `evidence`, `tool_calls`) is unchanged. When the local LLM tool
+agent answers, the response additionally carries `status` (`VALIDATED_AI` | `GROUNDING_FAILED` |
+`PROVIDER_UNAVAILABLE`), `source` (`llm` | `deterministic`), `provider_name`, `grounding`, and
+(when applicable) `fallback_reason`. Proxy/gateway mode and the no-provider deterministic mode
+return exactly the frozen fields.
