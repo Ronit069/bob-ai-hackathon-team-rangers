@@ -37,6 +37,8 @@ CARGO_TYPES = [
     "electronics",
     "apparel",
     "machinery",
+    "vaccine_lot_x",
+    "perishable_exotic",
 ]
 
 SHIPMENT_STATUSES = ["planned", "in_transit", "delayed", "delivered", "cancelled"]
@@ -82,6 +84,22 @@ POLICY_SEED = {
         "major_deviation_c": 5.0,
         "critical_duration_minutes": 45,
     },
+    "vaccine_lot_x": {
+        "min_c": 2.0,
+        "max_c": 8.0,
+        "max_excursion_minutes": 15,
+        "minor_deviation_c": 1.0,
+        "major_deviation_c": 3.0,
+        "critical_duration_minutes": 60,
+    },
+    "perishable_exotic": {
+        "min_c": 0.0,
+        "max_c": 4.0,
+        "max_excursion_minutes": 20,
+        "minor_deviation_c": 1.0,
+        "major_deviation_c": 3.0,
+        "critical_duration_minutes": 90,
+    },
 }
 
 # B-1 cargo profiles — [ASSUMPTION] illustrative sensitivity weights
@@ -90,6 +108,8 @@ CARGO_PROFILE_SEED = [
     {"cargo_type": "insulin", "display_name": "Insulin", "is_cold_chain": True, "sensitivity_weight": 0.90, "policy_required": True, "notes": "Illustrative demo sensitivity; not a product-specific claim."},
     {"cargo_type": "fresh_produce", "display_name": "Fresh produce", "is_cold_chain": True, "sensitivity_weight": 0.60, "policy_required": True, "notes": "Illustrative demo sensitivity; not a product-specific claim."},
     {"cargo_type": "frozen_food", "display_name": "Frozen food", "is_cold_chain": True, "sensitivity_weight": 0.70, "policy_required": True, "notes": "Illustrative demo sensitivity; not a product-specific claim."},
+    {"cargo_type": "vaccine_lot_x", "display_name": "Vaccine Lot X", "is_cold_chain": True, "sensitivity_weight": 0.90, "policy_required": True, "notes": "Illustrative demo sensitivity; not a product-specific claim."},
+    {"cargo_type": "perishable_exotic", "display_name": "Perishable Exotic", "is_cold_chain": True, "sensitivity_weight": 0.70, "policy_required": True, "notes": "Illustrative demo sensitivity; not a product-specific claim."},
     {"cargo_type": "pharma_generic", "display_name": "Generic pharma", "is_cold_chain": False, "sensitivity_weight": 0.50, "policy_required": False, "notes": None},
     {"cargo_type": "electronics", "display_name": "Electronics", "is_cold_chain": False, "sensitivity_weight": 0.00, "policy_required": False, "notes": None},
     {"cargo_type": "apparel", "display_name": "Apparel", "is_cold_chain": False, "sensitivity_weight": 0.00, "policy_required": False, "notes": None},

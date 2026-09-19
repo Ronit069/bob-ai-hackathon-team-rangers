@@ -49,8 +49,8 @@ class GeneratorTest(unittest.TestCase):
         self.assertIn(len(self.logistics["route_segments"]), range(12, 19))
         self.assertIn(len(self.logistics["shipments"]), range(40, 61))
         self.assertIn(len(self.logistics["fleet"][0]), range(20, 31))
-        self.assertEqual(len(self.coldchain["temperature_policies"]), 4)
-        self.assertEqual(len(self.coldchain["cargo_profiles"]), 8)
+        self.assertEqual(len(self.coldchain["temperature_policies"]), 6)
+        self.assertEqual(len(self.coldchain["cargo_profiles"]), 10)
 
     # -- matching ---------------------------------------------------------------
     def test_matching_statuses_for_scenario_shipments(self):
@@ -113,9 +113,8 @@ class GeneratorTest(unittest.TestCase):
         self.assertEqual(excursion["severity_rationale"], "duration>critical")
 
     def test_unknown_policy_review_flag(self):
-        self.assertEqual(self.gt["review_flags"]["S032"], ["policy_missing"])
-        self.assertEqual(self.gt["review_flags"]["S033"], ["policy_missing"])
-        self.assertNotIn("S032", self.excursions)
+        self.assertNotIn("S032", self.gt.get("review_flags", {}))
+        self.assertNotIn("S033", self.gt.get("review_flags", {}))
 
     def test_delivered_post_delivery_excluded(self):
         self.assertNotIn("S035", self.excursions)

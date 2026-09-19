@@ -110,7 +110,7 @@ export function ColdChainScreen() {
           <DataTable
             columns={[
               { key: "id", header: "Policy", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.id}</span> },
-              { key: "cargo_type", header: "Cargo", render: (row) => <span style={{ fontSize: 12 }}>{row.cargo_type}</span> },
+              { key: "cargo_type", header: "Cargo", render: (row) => <span style={{ fontSize: 12 }}>{row.cargo_type.replace(/_/g, " ")}</span> },
               { key: "range", header: "Range °C", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 600 }}>{row.min_c} … {row.max_c}</span> },
               { key: "tolerance", header: "Tolerance min", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.max_excursion_minutes}</span> },
               { key: "critical", header: "Critical min", render: (row) => <span style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>{row.critical_duration_minutes}</span> },

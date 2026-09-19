@@ -24,6 +24,8 @@ export const CARGO_TYPES = [
   "electronics",
   "apparel",
   "machinery",
+  "vaccine_lot_x",
+  "perishable_exotic",
 ];
 export const SHIPMENT_STATUSES = ["planned", "in_transit", "delayed", "delivered", "cancelled"];
 export const DISRUPTION_TYPES = ["weather", "port_strike", "geopolitical", "customs", "infrastructure"];
